@@ -649,21 +649,53 @@
   const DAYS_PT = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
+  // Feriados e pontes OAB SP 2026 (calendário administrativo)
+  const FERIADOS_OAB_2026 = {
+    '2026-01-01': 'Confraternização Universal',
+    '2026-02-16': 'Ponte do Carnaval',
+    '2026-02-17': 'Carnaval',
+    '2026-04-02': 'Ponte – Endoenças',
+    '2026-04-03': 'Sexta-Feira Santa',
+    '2026-04-20': 'Ponte – Tiradentes',
+    '2026-04-21': 'Tiradentes',
+    '2026-05-01': 'Dia do Trabalho',
+    '2026-06-04': 'Corpus Christi',
+    '2026-06-05': 'Ponte – Corpus Christi',
+    '2026-07-09': 'Revolução Constitucionalista SP',
+    '2026-07-10': 'Ponte – Revolução Constitucionalista SP',
+    '2026-09-07': 'Independência do Brasil',
+    '2026-10-12': 'Nossa Senhora Aparecida',
+    '2026-11-02': 'Finados',
+    '2026-11-20': 'Consciência Negra',
+    '2026-12-25': 'Natal',
+  };
+  // Férias coletivas jan/2026: dias 01 a 09 (retorno em 12/jan)
+  for (let d = 2; d <= 9; d++) {
+    const k = '2026-01-0' + d;
+    FERIADOS_OAB_2026[k] = 'Férias Coletivas 2025/2026';
+  }
+
   let holidays = [];
   let currentMonth, currentYear;
+
+  function loadHolidaysForMonth(year, month) {
+    const prefix = year + '-' + String(month+1).padStart(2,'0') + '-';
+    holidays = Object.keys(FERIADOS_OAB_2026).filter(k => k.startsWith(prefix));
+  }
 
   // Init month picker to current month
   const today = new Date();
   const picker = document.getElementById('monthPicker');
-  picker.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  picker.value = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0');
   currentYear = today.getFullYear();
   currentMonth = today.getMonth();
+  loadHolidaysForMonth(currentYear, currentMonth);
 
   picker.addEventListener('change', () => {
     const [y, m] = picker.value.split('-');
     currentYear = parseInt(y);
     currentMonth = parseInt(m) - 1;
-    holidays = [];
+    loadHolidaysForMonth(currentYear, currentMonth);
     renderHolidays();
     calculate();
   });
@@ -886,9 +918,12 @@
 
       let statusLabel = '';
       if (!working) {
-        if (isHol) statusLabel = '🔴 Feriado';
-        else if (date.getDay() === 0) statusLabel = '☀️ Domingo';
-        else statusLabel = '🔵 Sábado';
+        const hKey = fmtDate(date);
+        if (isHol) {
+          const hName = FERIADOS_OAB_2026[hKey] || 'Feriado';
+          statusLabel = ' 🔴 ' + hName;
+        } else if (date.getDay() === 0) statusLabel = ' ☀️ Domingo';
+        else statusLabel = ' 🔵 Sábado';
       }
 
       const cadCell  = working && cadDist  ? cadDist[d]  : null;
@@ -942,25 +977,30 @@
   function renderHolidays() {
     const list = document.getElementById('holidaysList');
     if (holidays.length === 0) { list.innerHTML = ''; return; }
-    list.innerHTML = holidays.map(h => {
+    const sorted = [...holidays].sort();
+    list.innerHTML = sorted.map(h => {
       const [y, m, d] = h.split('-');
       const dt = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
-      const label = `${d}/${m} — ${DAYS_PT[dt.getDay()]}`;
-      return `<span class="holiday-tag">${label}<button onclick="removeHoliday('${h}')">✕</button></span>`;
+      const name = FERIADOS_OAB_2026[h] || 'Feriado';
+      const isOAB = !!FERIADOS_OAB_2026[h];
+      const label = d + '/' + m + ' — ' + name;
+      const rmBtn = isOAB ? '' : '<button onclick="removeHoliday(' + "'" + h + "'" + ')">✕</button>';
+      return '<span class="holiday-tag">' + label + rmBtn + '</span>';
     }).join('');
   }
 
   function clearAll() {
     ['cad','civel','trab'].forEach(s => {
-      document.getElementById(`${s}-start`).value = '';
-      document.getElementById(`${s}-end`).value = '';
+      document.getElementById(s + '-start').value = '';
+      document.getElementById(s + '-end').value = '';
     });
-    holidays = [];
+    loadHolidaysForMonth(currentYear, currentMonth);
     renderHolidays();
     calculate();
   }
 
   // Initial
+  renderHolidays();
   calculate();
 </script>
 </body>
