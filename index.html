@@ -459,11 +459,88 @@
     gap: 10px;
   }
 
+  /* Print modal */
+  .print-modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .print-modal-overlay.open { display: flex; }
+  .print-modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    width: 340px;
+    max-width: 95vw;
+  }
+  .print-modal h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: var(--text);
+  }
+  .print-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .print-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+  .print-option:hover { border-color: #484f58; background: #1f2733; }
+  .print-option.selected-cad    { border-color: var(--accent-cad);   background: var(--accent-cad-dim); }
+  .print-option.selected-civel  { border-color: var(--accent-civel); background: var(--accent-civel-dim); }
+  .print-option.selected-trab   { border-color: var(--accent-trab);  background: var(--accent-trab-dim); }
+  .print-option.selected-all    { border-color: #7d8590; background: rgba(125,133,144,0.1); }
+  .print-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .dot-cad   { background: var(--accent-cad); }
+  .dot-civel { background: var(--accent-civel); }
+  .dot-trab  { background: var(--accent-trab); }
+  .dot-all   { background: linear-gradient(135deg, var(--accent-cad) 33%, var(--accent-civel) 66%, var(--accent-trab)); }
+  .print-modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
   @media print {
     body { background: #fff; color: #000; padding: 10px; }
-    .actions-bar, .holiday-controls, .month-selector { display: none; }
+    .actions-bar, .holiday-controls, .month-selector, .print-modal-overlay { display: none !important; }
     .sector-card, .table-section, .summary-card { border: 1px solid #ccc; }
     header { border-bottom: 1px solid #ccc; }
+
+    /* Hide columns not belonging to printed sector */
+    body.print-cad   col.col-civel, body.print-cad   col.col-trab,
+    body.print-civel col.col-cad,   body.print-civel col.col-trab,
+    body.print-trab  col.col-cad,   body.print-trab  col.col-civel { display: none; }
+
+    body.print-cad   .th-civel, body.print-cad   .th-trab,
+    body.print-cad   .td-civel, body.print-cad   .td-trab,
+    body.print-civel .th-cad,   body.print-civel .th-trab,
+    body.print-civel .td-cad,   body.print-civel .td-trab,
+    body.print-trab  .th-cad,   body.print-trab  .th-civel,
+    body.print-trab  .td-cad,   body.print-trab  .td-civel { display: none !important; }
+
+    body.print-cad   .sector-card.civel, body.print-cad   .sector-card.trabalhista,
+    body.print-cad   .summary-card:not(.sc-cad):not(.sc-total),
+    body.print-civel .sector-card.cad,   body.print-civel .sector-card.trabalhista,
+    body.print-civel .summary-card:not(.sc-civel):not(.sc-total),
+    body.print-trab  .sector-card.cad,   body.print-trab  .sector-card.civel,
+    body.print-trab  .summary-card:not(.sc-trab):not(.sc-total) { display: none !important; }
   }
 
   @media (max-width: 600px) {
@@ -584,22 +661,22 @@
 
 <!-- SUMMARY -->
 <div class="summary-cards" id="summaryCards" style="display:none">
-  <div class="summary-card">
+  <div class="summary-card sc-cad">
     <div class="sc-label">CAD — Cópias/dia</div>
     <div class="sc-value" id="sum-cad-day" style="color:var(--accent-cad)">—</div>
     <div class="sc-sub" id="sum-cad-total">Total: —</div>
   </div>
-  <div class="summary-card">
+  <div class="summary-card sc-civel">
     <div class="sc-label">Cível — Cópias/dia</div>
     <div class="sc-value" id="sum-civel-day" style="color:var(--accent-civel)">—</div>
     <div class="sc-sub" id="sum-civel-total">Total: —</div>
   </div>
-  <div class="summary-card">
+  <div class="summary-card sc-trab">
     <div class="sc-label">Trabalhista — Cópias/dia</div>
     <div class="sc-value" id="sum-trab-day" style="color:var(--accent-trab)">—</div>
     <div class="sc-sub" id="sum-trab-total">Total: —</div>
   </div>
-  <div class="summary-card">
+  <div class="summary-card sc-total">
     <div class="sc-label">Total Geral do Mês</div>
     <div class="sc-value" id="sum-total" style="color:var(--text)">—</div>
     <div class="sc-sub" id="sum-days">— dias úteis</div>
@@ -625,12 +702,12 @@
           <th>#</th>
           <th>Dia</th>
           <th>Semana</th>
-          <th>CAD — Contador</th>
-          <th>CAD — Cópias/dia</th>
-          <th>Cível — Contador</th>
-          <th>Cível — Cópias/dia</th>
-          <th>Trabalhista — Contador</th>
-          <th>Trabalhista — Cópias/dia</th>
+          <th class="th-cad">CAD — Contador</th>
+          <th class="th-cad">CAD — Cópias/dia</th>
+          <th class="th-civel">Cível — Contador</th>
+          <th class="th-civel">Cível — Cópias/dia</th>
+          <th class="th-trab">Trabalhista — Contador</th>
+          <th class="th-trab">Trabalhista — Cópias/dia</th>
         </tr>
       </thead>
       <tbody id="tableBody">
@@ -640,9 +717,34 @@
   </div>
 </div>
 
+<!-- PRINT MODAL -->
+<div class="print-modal-overlay" id="printModal">
+  <div class="print-modal">
+    <h3>🖨️ Selecione o que imprimir</h3>
+    <div class="print-options">
+      <div class="print-option" id="popt-cad" onclick="selectPrint('cad')">
+        <span class="print-dot dot-cad"></span> 📋 CAD
+      </div>
+      <div class="print-option" id="popt-civel" onclick="selectPrint('civel')">
+        <span class="print-dot dot-civel"></span> ⚖️ Fórum Cível
+      </div>
+      <div class="print-option" id="popt-trab" onclick="selectPrint('trab')">
+        <span class="print-dot dot-trab"></span> 🏛️ Fórum Trabalhista
+      </div>
+      <div class="print-option" id="popt-all" onclick="selectPrint('all')">
+        <span class="print-dot dot-all"></span> Todos os setores
+      </div>
+    </div>
+    <div class="print-modal-actions">
+      <button class="btn btn-ghost" onclick="closePrintModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmPrint()">Imprimir</button>
+    </div>
+  </div>
+</div>
+
 <div class="actions-bar">
   <button class="btn btn-ghost" onclick="clearAll()">Limpar tudo</button>
-  <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
+  <button class="btn btn-primary" onclick="openPrintModal()">🖨️ Imprimir</button>
 </div>
 
 <script>
@@ -934,12 +1036,12 @@
         <td class="day-num">${String(d).padStart(2,'0')}</td>
         <td class="day-name">${dayName}${isTod ? ' ◀ Hoje' : ''}${statusLabel}</td>
         <td class="day-name">${working ? `Dia útil ${wdCount}` : '—'}</td>
-        <td class="counter-val cad">${cadCell ? cadCell.counter.toLocaleString('pt-BR') : (working ? '—' : '')}</td>
-        <td class="daily-copies ${cadCell ? 'highlight' : ''}">${cadCell ? '+' + cadCell.copies.toLocaleString('pt-BR') : ''}</td>
-        <td class="counter-val civel">${civCell ? civCell.counter.toLocaleString('pt-BR') : (working ? '—' : '')}</td>
-        <td class="daily-copies ${civCell ? 'highlight' : ''}">${civCell ? '+' + civCell.copies.toLocaleString('pt-BR') : ''}</td>
-        <td class="counter-val trab">${trbCell ? trbCell.counter.toLocaleString('pt-BR') : (working ? '—' : '')}</td>
-        <td class="daily-copies ${trbCell ? 'highlight' : ''}">${trbCell ? '+' + trbCell.copies.toLocaleString('pt-BR') : ''}</td>
+        <td class="counter-val cad td-cad">${cadCell ? cadCell.counter.toLocaleString('pt-BR') : (working ? '—' : '')}</td>
+        <td class="daily-copies td-cad ${cadCell ? 'highlight' : ''}">${cadCell ? '+' + cadCell.copies.toLocaleString('pt-BR') : ''}</td>
+        <td class="counter-val civel td-civel">${civCell ? civCell.counter.toLocaleString('pt-BR') : (working ? '—' : '')}</td>
+        <td class="daily-copies td-civel ${civCell ? 'highlight' : ''}">${civCell ? '+' + civCell.copies.toLocaleString('pt-BR') : ''}</td>
+        <td class="counter-val trab td-trab">${trbCell ? trbCell.counter.toLocaleString('pt-BR') : (working ? '—' : '')}</td>
+        <td class="daily-copies td-trab ${trbCell ? 'highlight' : ''}">${trbCell ? '+' + trbCell.copies.toLocaleString('pt-BR') : ''}</td>
       </tr>`;
     }
 
@@ -1002,6 +1104,45 @@
   // Initial
   renderHolidays();
   calculate();
+
+  // --- PRINT MODAL ---
+  let selectedPrintSector = 'all';
+
+  function openPrintModal() {
+    selectedPrintSector = 'all';
+    document.querySelectorAll('.print-option').forEach(el => el.classList.remove('selected-cad','selected-civel','selected-trab','selected-all'));
+    document.getElementById('popt-all').classList.add('selected-all');
+    document.getElementById('printModal').classList.add('open');
+  }
+
+  function closePrintModal() {
+    document.getElementById('printModal').classList.remove('open');
+  }
+
+  function selectPrint(sector) {
+    selectedPrintSector = sector;
+    document.querySelectorAll('.print-option').forEach(el => el.classList.remove('selected-cad','selected-civel','selected-trab','selected-all'));
+    document.getElementById('popt-' + sector).classList.add('selected-' + sector);
+  }
+
+  function confirmPrint() {
+    closePrintModal();
+    // Remove any previous print class
+    document.body.classList.remove('print-cad','print-civel','print-trab');
+    if (selectedPrintSector !== 'all') {
+      document.body.classList.add('print-' + selectedPrintSector);
+    }
+    setTimeout(() => {
+      window.print();
+      // Clean up after print dialog closes
+      setTimeout(() => document.body.classList.remove('print-cad','print-civel','print-trab'), 500);
+    }, 100);
+  }
+
+  // Close modal clicking outside
+  document.getElementById('printModal').addEventListener('click', function(e) {
+    if (e.target === this) closePrintModal();
+  });
 </script>
 </body>
 </html>
