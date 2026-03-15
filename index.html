@@ -706,20 +706,73 @@
     return days;
   }
 
-  function distributeCounters(start, end, workingDays) {
+  // Seeded pseudo-random so numbers are stable per month+sector key
+  function seededRng(seed) {
+    let s = seed;
+    return function() {
+      s = (s * 1664525 + 1013904223) & 0xffffffff;
+      return (s >>> 0) / 0xffffffff;
+    };
+  }
+
+  function distributeCounters(start, end, workingDays, sectorKey) {
     const total = end - start;
     if (total <= 0 || workingDays.length === 0) return null;
     const n = workingDays.length;
-    const base = Math.floor(total / n);
-    const remainder = total % n;
-    // Distribute remainder across first days to keep uniqueness (no equal consecutive values)
-    const dailyCopies = workingDays.map((_, i) => base + (i < remainder ? 1 : 0));
+
+    // Seed based on sector + month + total so it's deterministic but unique
+    const seedVal = sectorKey.split('').reduce((a,c) => a + c.charCodeAt(0), 0)
+                  + currentYear * 100 + currentMonth + total;
+    const rand = seededRng(seedVal);
+
+    // Generate random weights simulating human behaviour:
+    // - Monday/Friday tend to be slightly higher
+    // - Some days are quiet, some are busy
+    // - Occasional "spike" day (big print job)
+    const raw = workingDays.map((day, i) => {
+      const date = new Date(currentYear, currentMonth, day);
+      const dow = date.getDay(); // 1=Mon ... 5=Fri
+      let weight = 0.5 + rand(); // base 0.5–1.5
+
+      // Monday: slightly higher (backlog from weekend)
+      if (dow === 1) weight *= 1.15 + rand() * 0.2;
+      // Friday: slightly higher (end of week rush)
+      if (dow === 5) weight *= 1.1 + rand() * 0.15;
+      // Wednesday: sometimes quiet
+      if (dow === 3 && rand() > 0.6) weight *= 0.75;
+
+      // Random spike ~10% chance — big print job day
+      if (rand() < 0.10) weight *= 1.8 + rand() * 1.2;
+
+      // Random quiet day ~12% chance
+      if (rand() < 0.12) weight *= 0.4 + rand() * 0.3;
+
+      return Math.max(weight, 0.05); // never zero
+    });
+
+    // Normalize weights to sum = total copies
+    const sumRaw = raw.reduce((a, b) => a + b, 0);
+    let copies = raw.map(w => Math.max(1, Math.round((w / sumRaw) * total)));
+
+    // Correct rounding drift — adjust last day to make exact sum
+    let diff = total - copies.reduce((a, b) => a + b, 0);
+    // Spread correction across random positions to avoid touching only the last
+    let attempts = n * 2;
+    while (diff !== 0 && attempts-- > 0) {
+      const idx = Math.floor(rand() * n);
+      if (diff > 0) { copies[idx]++; diff--; }
+      else if (copies[idx] > 1) { copies[idx]--; diff++; }
+    }
+    // Safety: force last day to absorb any leftover
+    copies[n - 1] += diff;
+    if (copies[n - 1] < 1) copies[n - 1] = 1;
+
     // Build cumulative counters
     const counters = {};
     let running = start;
     workingDays.forEach((day, i) => {
-      running += dailyCopies[i];
-      counters[day] = { counter: running, copies: dailyCopies[i] };
+      running += copies[i];
+      counters[day] = { counter: running, copies: copies[i] };
     });
     return counters;
   }
@@ -746,9 +799,9 @@
     document.getElementById('badge-civel').textContent = civTotal > 0 ? `Total: ${civTotal.toLocaleString('pt-BR')}` : 'Total: —';
     document.getElementById('badge-trab').textContent  = trbTotal > 0 ? `Total: ${trbTotal.toLocaleString('pt-BR')}` : 'Total: —';
 
-    const cadDist = cadEnd > cadStart ? distributeCounters(cadStart, cadEnd, workingDays) : null;
-    const civDist = civEnd > civStart ? distributeCounters(civStart, civEnd, workingDays)  : null;
-    const trbDist = trbEnd > trbStart ? distributeCounters(trbStart, trbEnd, workingDays)  : null;
+    const cadDist = cadEnd > cadStart ? distributeCounters(cadStart, cadEnd, workingDays, 'cad')   : null;
+    const civDist = civEnd > civStart ? distributeCounters(civStart, civEnd, workingDays, 'civel') : null;
+    const trbDist = trbEnd > trbStart ? distributeCounters(trbStart, trbEnd, workingDays, 'trab')  : null;
 
     // Progress bars (based on today's position in working days)
     const todayDate = new Date();
