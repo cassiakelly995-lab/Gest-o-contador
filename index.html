@@ -3,1439 +3,1339 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel de Controle — Contadores de Impressão</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Controle de Cópias — OAB Santana de Parnaíba</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #1c2333;
-    --border: #30363d;
-    --accent-cad: #f0a500;
-    --accent-civel: #3fb1e3;
-    --accent-trab: #5ccc8a;
-    --accent-cad-dim: rgba(240,165,0,0.12);
-    --accent-civel-dim: rgba(63,177,227,0.12);
-    --accent-trab-dim: rgba(92,204,138,0.12);
-    --text: #e6edf3;
-    --text-muted: #7d8590;
-    --text-dim: #484f58;
-    --red: #ff6b6b;
-    --green: #5ccc8a;
-  }
+:root {
+  --bg:         #0a0d12;
+  --surface:    #111620;
+  --surface2:   #181e2c;
+  --surface3:   #1e2636;
+  --border:     #252e42;
+  --border2:    #2e3a54;
+  --cad:        #f5a623;
+  --civel:      #4db8e8;
+  --trab:       #4de89a;
+  --cad-dim:    rgba(245,166,35,0.10);
+  --civel-dim:  rgba(77,184,232,0.10);
+  --trab-dim:   rgba(77,232,154,0.10);
+  --text:       #dce6f5;
+  --muted:      #6a7899;
+  --dim:        #3a4560;
+  --red:        #ff5e6c;
+  --white:      #ffffff;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  min-height: 100vh;
+  padding: 28px 24px 48px;
+}
+
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.h-left h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.h-left h1 span { color: var(--cad); }
+
+.h-left p {
+  font-size: 0.67rem;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+
+.h-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.month-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.month-row label {
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+input[type="month"] {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.8rem;
+  padding: 7px 11px;
+  border-radius: 7px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="month"]:focus { border-color: var(--cad); }
+
+.wd-badge {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.wd-badge strong { color: var(--cad); }
+
+/* ── SECTOR CARDS ── */
+.sectors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  display: block;
+  height: 3px;
+  width: 100%;
+}
+
+.card.cad::before   { background: var(--cad); }
+.card.civel::before { background: var(--civel); }
+.card.trab::before  { background: var(--trab); }
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 10px;
+}
+
+.card-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.cad  .card-name { color: var(--cad); }
+.civel .card-name { color: var(--civel); }
+.trab .card-name  { color: var(--trab); }
+
+.card-badge {
+  font-size: 0.68rem;
+  padding: 3px 11px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.cad .card-badge   { background: var(--cad-dim);   color: var(--cad); }
+.civel .card-badge { background: var(--civel-dim); color: var(--civel); }
+.trab .card-badge  { background: var(--trab-dim);  color: var(--trab); }
+
+.inputs-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 20px 18px;
+}
+
+.igrp label {
+  display: block;
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.igrp input[type="number"] {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 1.05rem;
+  font-weight: 500;
+  padding: 9px 12px;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color .2s;
+  -moz-appearance: textfield;
+}
+
+.igrp input::-webkit-outer-spin-button,
+.igrp input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.cad   .igrp input:focus { border-color: var(--cad); }
+.civel .igrp input:focus { border-color: var(--civel); }
+.trab  .igrp input:focus { border-color: var(--trab); }
+
+.prog-wrap { padding: 0 20px 18px; }
+
+.prog-track {
+  height: 3px;
+  background: var(--surface3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.prog-fill { height: 100%; border-radius: 2px; width: 0%; transition: width .5s ease; }
+
+.cad  .prog-fill { background: var(--cad); }
+.civel .prog-fill { background: var(--civel); }
+.trab .prog-fill  { background: var(--trab); }
+
+.prog-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.63rem;
+  color: var(--muted);
+}
+
+/* ── SUMÁRIO ── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.sc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 15px 18px;
+}
+
+.sc-label {
+  font-size: 0.60rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+.sc-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.sc-sub { font-size: 0.62rem; color: var(--dim); margin-top: 4px; }
+
+/* ── FERIADOS ── */
+.section-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sec-head h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.hol-ctrl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+input[type="date"] {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  outline: none;
+}
+
+.btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  padding: 6px 14px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: .3px;
+  transition: opacity .15s, transform .1s;
+}
+
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--cad); color: #000; }
+.btn-ghost   { background: var(--surface2); color: var(--muted); border: 1px solid var(--border2); }
+.btn-ghost:hover { color: var(--text); }
+.btn-danger  { background: rgba(255,94,108,.12); color: var(--red); border: 1px solid rgba(255,94,108,.2); }
+
+.hol-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 20px; }
+
+.htag {
+  background: rgba(255,94,108,.08);
+  border: 1px solid rgba(255,94,108,.18);
+  color: var(--red);
+  border-radius: 20px;
+  padding: 3px 11px;
+  font-size: 0.63rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.htag button {
+  background: none; border: none;
+  color: var(--red); cursor: pointer;
+  font-size: .72rem; opacity: .55;
+  transition: opacity .15s; padding: 0;
+}
+
+.htag button:hover { opacity: 1; }
+
+/* ── TABELA ── */
+.tbl-scroll {
+  overflow-x: auto;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+}
+
+thead th {
+  background: var(--surface2);
+  padding: 9px 12px;
+  text-align: left;
+  font-size: 0.60rem;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--muted);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-bottom: 1px solid var(--border2);
+  white-space: nowrap;
+}
+
+thead th.h-cad   { background: rgba(245,166,35,.06); color: var(--cad); }
+thead th.h-civel { background: rgba(77,184,232,.06); color: var(--civel); }
+thead th.h-trab  { background: rgba(77,232,154,.06); color: var(--trab); }
+
+tbody tr { border-bottom: 1px solid rgba(37,46,66,.6); transition: background .12s; }
+tbody tr:hover { background: rgba(255,255,255,.015); }
+tbody tr.row-today { background: rgba(245,166,35,.04); }
+tbody tr.row-today td:first-child { border-left: 2px solid var(--cad); }
+tbody tr.non-wd { opacity: .28; }
+tbody tr.non-wd td.dn { color: var(--red); }
+
+td { padding: 8px 12px; white-space: nowrap; }
+
+td.dn  { font-size: 0.78rem; font-weight: 500; color: var(--muted); }
+td.dd  { font-size: 0.65rem; color: var(--dim); }
+td.dwi { font-size: 0.62rem; color: var(--dim); }
+
+/* Contador inicial/final e cópias */
+td.ci, td.cf { font-size: 0.75rem; font-weight: 500; }
+td.cp { font-size: 0.7rem; font-weight: 600; }
+
+td.ci.cad,  td.cf.cad  { color: rgba(245,166,35,.65); }
+td.cp.cad              { color: var(--cad); }
+td.ci.civ,  td.cf.civ  { color: rgba(77,184,232,.65); }
+td.cp.civ              { color: var(--civel); }
+td.ci.trb,  td.cf.trb  { color: rgba(77,232,154,.65); }
+td.cp.trb              { color: var(--trab); }
+
+td.empty { color: var(--dim); font-size: 0.65rem; }
+
+/* ── ACTIONS ── */
+.actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+
+/* ── MODAL ── */
+.modal-ov {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.72);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-ov.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 28px 30px;
+  width: 390px;
+  max-width: 96vw;
+}
+
+.modal h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.modal p {
+  font-size: 0.68rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.popts { display: flex; flex-direction: column; gap: 9px; margin-bottom: 22px; }
+
+.popt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 9px;
+  padding: 11px 15px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--text);
+  transition: border-color .15s, background .15s;
+}
+
+.popt:hover { border-color: var(--border2); background: var(--surface3); }
+.popt.sel-cad   { border-color: var(--cad);   background: var(--cad-dim); }
+.popt.sel-civel { border-color: var(--civel); background: var(--civel-dim); }
+.popt.sel-trab  { border-color: var(--trab);  background: var(--trab-dim); }
+.popt.sel-all   { border-color: var(--muted); background: rgba(106,120,153,.08); }
+
+.pdot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.pdot-cad   { background: var(--cad); }
+.pdot-civel { background: var(--civel); }
+.pdot-trab  { background: var(--trab); }
+.pdot-all   { background: conic-gradient(var(--cad) 0 33%, var(--civel) 33% 66%, var(--trab) 66% 100%); }
+
+.modal-acts { display: flex; gap: 9px; justify-content: flex-end; }
+
+/* ══════════════════════════════════════════
+   IMPRESSÃO
+══════════════════════════════════════════ */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    min-height: 100vh;
-    padding: 24px;
+    background: #fff !important;
+    color: #111 !important;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 9.5pt;
   }
 
-  header {
+  header, .sectors, .summary-grid, .section-box, .actions, .modal-ov { display: none !important; }
+  #printReport { display: block !important; }
+
+  @page { size: A4 portrait; margin: 14mm 11mm 14mm 11mm; }
+
+  .pr-header {
+    border-bottom: 2pt solid #111;
+    padding-bottom: 7pt;
+    margin-bottom: 10pt;
     display: flex;
-    align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 32px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-    gap: 16px;
+    align-items: flex-start;
   }
 
-  .header-title h1 {
+  .pr-title {
     font-family: 'Syne', sans-serif;
-    font-size: 1.6rem;
+    font-size: 14pt;
     font-weight: 800;
-    letter-spacing: -0.5px;
-    color: #fff;
+    color: #111;
     line-height: 1.2;
   }
 
-  .header-title p {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    margin-top: 4px;
-    letter-spacing: 1px;
+  .pr-sub {
+    font-size: 7.5pt;
+    color: #666;
+    margin-top: 2pt;
+    letter-spacing: .3pt;
     text-transform: uppercase;
   }
 
-  .header-meta {
+  .pr-meta { text-align: right; font-size: 7.5pt; color: #555; line-height: 1.7; }
+
+  /* Resumo */
+  .pr-sum {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
+    gap: 7pt;
+    margin-bottom: 12pt;
   }
 
-  .month-selector {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  .pr-sc {
+    flex: 1;
+    border: 1pt solid #ddd;
+    border-radius: 3pt;
+    padding: 7pt 9pt;
   }
 
-  .month-selector label {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
+  .pr-sc.sc-cad   { border-left: 4pt solid #c8880a; }
+  .pr-sc.sc-civel { border-left: 4pt solid #1c7ca0; }
+  .pr-sc.sc-trab  { border-left: 4pt solid #1a8c55; }
+  .pr-sc.sc-tot   { border-left: 4pt solid #222; }
 
-  .month-selector input[type="month"] {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.8rem;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    outline: none;
-  }
+  .pr-sc-lbl { font-size: 6pt; text-transform: uppercase; letter-spacing: .4pt; color: #777; margin-bottom: 2pt; }
+  .pr-sc-val { font-family: 'Syne', sans-serif; font-size: 13pt; font-weight: 800; color: #111; line-height: 1; }
+  .pr-sc-sub { font-size: 6pt; color: #999; margin-top: 2pt; }
 
-  .month-selector input[type="month"]:focus { border-color: var(--accent-cad); }
-
-  .working-days-badge {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-  }
-
-  .working-days-badge span { color: var(--accent-cad); font-weight: 500; }
-
-  .sectors-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 20px;
-    margin-bottom: 28px;
-  }
-
-  .sector-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
-  .sector-card.cad    { border-top: 3px solid var(--accent-cad); }
-  .sector-card.civel  { border-top: 3px solid var(--accent-civel); }
-  .sector-card.trabalhista { border-top: 3px solid var(--accent-trab); }
-  .sector-card:hover  { border-color: #484f58; }
-
-  .sector-header {
-    padding: 16px 20px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .sector-name {
+  /* Tabela */
+  .pr-tbl-title {
     font-family: 'Syne', sans-serif;
-    font-size: 0.95rem;
+    font-size: 8pt;
     font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-
-  .cad .sector-name         { color: var(--accent-cad); }
-  .civel .sector-name       { color: var(--accent-civel); }
-  .trabalhista .sector-name { color: var(--accent-trab); }
-
-  .sector-total-badge {
-    font-size: 0.68rem;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-  }
-
-  .cad .sector-total-badge         { background: var(--accent-cad-dim);   color: var(--accent-cad); }
-  .civel .sector-total-badge       { background: var(--accent-civel-dim); color: var(--accent-civel); }
-  .trabalhista .sector-total-badge { background: var(--accent-trab-dim);  color: var(--accent-trab); }
-
-  .counter-inputs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 0 20px 16px;
-  }
-
-  .input-group label {
-    display: block;
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    letter-spacing: 1px;
     text-transform: uppercase;
-    margin-bottom: 5px;
+    letter-spacing: .4pt;
+    color: #333;
+    margin-bottom: 5pt;
+    padding-bottom: 3pt;
+    border-bottom: 1pt solid #e0e0e0;
   }
 
-  .input-group input[type="number"] {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 1rem;
-    font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.2s;
-    -moz-appearance: textfield;
-  }
+  .pr-tbl { width: 100%; border-collapse: collapse; font-size: 7.5pt; page-break-inside: auto; }
 
-  .input-group input::-webkit-outer-spin-button,
-  .input-group input::-webkit-inner-spin-button { -webkit-appearance: none; }
-
-  .cad .input-group input:focus         { border-color: var(--accent-cad); }
-  .civel .input-group input:focus       { border-color: var(--accent-civel); }
-  .trabalhista .input-group input:focus { border-color: var(--accent-trab); }
-
-  .progress-bar-wrap { padding: 0 20px 16px; }
-
-  .progress-bar-track {
-    height: 4px;
-    background: var(--surface2);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.4s ease;
-    width: 0%;
-  }
-
-  .cad .progress-bar-fill         { background: var(--accent-cad); }
-  .civel .progress-bar-fill       { background: var(--accent-civel); }
-  .trabalhista .progress-bar-fill { background: var(--accent-trab); }
-
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 6px;
-    font-size: 0.65rem;
-    color: var(--text-muted);
-  }
-
-  .table-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 28px;
-  }
-
-  .table-section-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .table-section-header h2 {
-    font-family: 'Syne', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .holiday-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .holiday-input-wrap {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-
-  .holiday-input-wrap input[type="date"] {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    padding: 5px 8px;
-    border-radius: 6px;
-    outline: none;
-  }
-
-  .btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    padding: 6px 14px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-  }
-
-  .btn:active { transform: scale(0.97); }
-  .btn-primary { background: var(--accent-cad); color: #000; }
-  .btn-ghost { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
-  .btn-ghost:hover { color: var(--text); border-color: #484f58; }
-  .btn-danger { background: rgba(255,107,107,0.15); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
-
-  .holidays-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 0 20px 14px;
-  }
-
-  .holiday-tag {
-    background: rgba(255,107,107,0.1);
-    border: 1px solid rgba(255,107,107,0.2);
-    color: var(--red);
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: 0.65rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .holiday-tag button {
-    background: none;
-    border: none;
-    color: var(--red);
-    cursor: pointer;
-    font-size: 0.75rem;
-    line-height: 1;
-    opacity: 0.6;
-    transition: opacity 0.2s;
-    padding: 0;
-  }
-
-  .holiday-tag button:hover { opacity: 1; }
-
-  .table-scroll {
-    overflow-x: auto;
-    max-height: 460px;
-    overflow-y: auto;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.75rem;
-  }
-
-  thead th {
-    background: var(--surface2);
-    padding: 10px 14px;
+  .pr-tbl thead th {
+    background: #f0f0f0 !important;
+    color: #333 !important;
+    padding: 4pt 5pt;
     text-align: left;
-    font-size: 0.65rem;
-    letter-spacing: 1px;
+    font-size: 6.5pt;
     text-transform: uppercase;
-    color: var(--text-muted);
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    white-space: nowrap;
-    border-bottom: 1px solid var(--border);
+    letter-spacing: .2pt;
+    border: 1pt solid #ddd;
+    position: static !important;
   }
 
-  thead th:first-child { width: 48px; }
+  .pr-tbl thead th.h-cad   { background: #fdf3dd !important; }
+  .pr-tbl thead th.h-civel { background: #e6f4fd !important; }
+  .pr-tbl thead th.h-trab  { background: #e6faf0 !important; }
 
-  tbody tr {
-    border-bottom: 1px solid rgba(48,54,61,0.5);
-    transition: background 0.15s;
-  }
+  .pr-tbl tbody tr { page-break-inside: avoid; }
+  .pr-tbl tbody td { padding: 3.5pt 5pt; border: .5pt solid #e8e8e8; vertical-align: middle; }
+  .pr-tbl tbody tr:nth-child(even) { background: #fafafa !important; }
 
-  tbody tr:hover { background: rgba(255,255,255,0.02); }
-  tbody tr.today { background: rgba(240,165,0,0.05); }
-  tbody tr.today td:first-child { border-left: 2px solid var(--accent-cad); }
+  .pr-tbl tbody tr.pr-nw { background: #f7f0f0 !important; color: #bbb !important; }
+  .pr-tbl tbody tr.pr-today { background: #fffbe6 !important; }
+  .pr-tbl tbody tr.pr-today td:first-child { border-left: 3pt solid #c8880a; }
 
-  td {
-    padding: 9px 14px;
-    color: var(--text);
-    white-space: nowrap;
-  }
+  .pr-tbl td.pr-dn  { font-weight: 600; color: #333; text-align: center; width: 22pt; }
+  .pr-tbl td.pr-dd  { color: #555; font-size: 7pt; }
+  .pr-tbl td.pr-wi  { color: #aaa; font-size: 6.5pt; text-align: center; }
+  .pr-tbl td.pr-emp { color: #ccc; text-align: center; }
 
-  td.day-num   { font-weight: 500; color: var(--text-muted); font-size: 0.8rem; }
-  td.day-name  { color: var(--text-dim); font-size: 0.68rem; }
+  /* contadores e cópias */
+  .pr-tbl td.pr-ci-cad, .pr-tbl td.pr-cf-cad { color: #8c5e00; font-size: 7pt; }
+  .pr-tbl td.pr-cp-cad { color: #c8880a; font-weight: 700; }
+  .pr-tbl td.pr-ci-civ, .pr-tbl td.pr-cf-civ { color: #0a5a7a; font-size: 7pt; }
+  .pr-tbl td.pr-cp-civ { color: #1c7ca0; font-weight: 700; }
+  .pr-tbl td.pr-ci-trb, .pr-tbl td.pr-cf-trb { color: #0a5a30; font-size: 7pt; }
+  .pr-tbl td.pr-cp-trb { color: #1a8c55; font-weight: 700; }
 
-  td.counter-val {
-    font-size: 0.85rem;
-    font-weight: 500;
-    font-family: 'DM Mono', monospace;
-  }
-
-  td.counter-val.cad   { color: var(--accent-cad); }
-  td.counter-val.civel { color: var(--accent-civel); }
-  td.counter-val.trab  { color: var(--accent-trab); }
-
-  td.daily-copies { font-size: 0.72rem; color: var(--text-muted); }
-  td.daily-copies.highlight { color: var(--text); }
-
-  .non-working { opacity: 0.3; font-style: italic; }
-  .non-working td.day-name { color: var(--red); font-style: normal; }
-
-  .summary-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 14px;
-    margin-bottom: 28px;
-  }
-
-  .summary-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 18px;
-  }
-
-  .summary-card .sc-label {
-    font-size: 0.62rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-  }
-
-  .summary-card .sc-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 800;
-    line-height: 1;
-  }
-
-  .summary-card .sc-sub { font-size: 0.65rem; color: var(--text-dim); margin-top: 4px; }
-
-  .actions-bar {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-
-  /* PRINT MODAL */
-  .print-modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .print-modal-overlay.open { display: flex; }
-
-  .print-modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 28px 32px;
-    width: 380px;
-    max-width: 95vw;
-  }
-
-  .print-modal h3 {
-    font-family: 'Syne', sans-serif;
-    font-size: 1rem;
+  .pr-tbl tbody tr.pr-totals td {
+    background: #ebebeb !important;
     font-weight: 700;
-    margin-bottom: 6px;
-    color: var(--text);
+    border-top: 1.5pt solid #999;
+    font-size: 8pt;
   }
 
-  .print-modal p.print-hint {
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    margin-bottom: 18px;
-    line-height: 1.5;
-  }
+  /* Feriados */
+  .pr-hols { margin-top: 10pt; font-size: 7pt; color: #666; }
+  .pr-hols-ttl { font-weight: 700; color: #333; margin-bottom: 3pt; font-size: 7pt; }
+  .pr-hol-item { display: inline-block; margin-right: 10pt; color: #c0392b; }
 
-  .print-options {
+  /* Rodapé */
+  .pr-footer {
+    margin-top: 12pt;
+    padding-top: 5pt;
+    border-top: 1pt solid #ddd;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 22px;
+    justify-content: space-between;
+    font-size: 6.5pt;
+    color: #bbb;
   }
 
-  .print-option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 11px 14px;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    font-size: 0.82rem;
-    color: var(--text);
-  }
+  /* Filtro por setor */
+  body.print-cad   .pr-col-civel, body.print-cad   .pr-col-trab { display: none !important; }
+  body.print-cad   .pr-sc-civel, body.print-cad   .pr-sc-trab  { display: none !important; }
+  body.print-civel .pr-col-cad,  body.print-civel .pr-col-trab { display: none !important; }
+  body.print-civel .pr-sc-cad,   body.print-civel .pr-sc-trab  { display: none !important; }
+  body.print-trab  .pr-col-cad,  body.print-trab  .pr-col-civel{ display: none !important; }
+  body.print-trab  .pr-sc-cad,   body.print-trab  .pr-sc-civel { display: none !important; }
+}
 
-  .print-option:hover { border-color: #484f58; background: #1f2733; }
-  .print-option.selected-cad   { border-color: var(--accent-cad);   background: var(--accent-cad-dim); }
-  .print-option.selected-civel { border-color: var(--accent-civel); background: var(--accent-civel-dim); }
-  .print-option.selected-trab  { border-color: var(--accent-trab);  background: var(--accent-trab-dim); }
-  .print-option.selected-all   { border-color: #7d8590; background: rgba(125,133,144,0.1); }
+#printReport { display: none; }
 
-  .print-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .dot-cad   { background: var(--accent-cad); }
-  .dot-civel { background: var(--accent-civel); }
-  .dot-trab  { background: var(--accent-trab); }
-  .dot-all   { background: linear-gradient(135deg, var(--accent-cad) 33%, var(--accent-civel) 66%, var(--accent-trab)); }
-
-  .print-modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-
-  /* =============================================
-     PRINT STYLES — RELATÓRIO LIMPO E COMPLETO
-  ============================================= */
-  @media print {
-    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-
-    body {
-      background: #fff !important;
-      color: #111 !important;
-      font-family: 'DM Mono', monospace;
-      padding: 0 !important;
-      margin: 0 !important;
-      font-size: 10pt;
-    }
-
-    /* Oculta tudo que não é relatório */
-    header,
-    .sectors-grid,
-    .summary-cards,
-    .table-section,
-    .actions-bar,
-    .holidays-list,
-    .holiday-controls,
-    .print-modal-overlay { display: none !important; }
-
-    /* Mostra apenas o relatório de impressão */
-    #printReport { display: block !important; }
-
-    @page {
-      size: A4 portrait;
-      margin: 15mm 12mm 15mm 12mm;
-    }
-
-    /* Cabeçalho do relatório */
-    .pr-header {
-      border-bottom: 2.5pt solid #111;
-      padding-bottom: 8pt;
-      margin-bottom: 12pt;
-    }
-
-    .pr-header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .pr-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 15pt;
-      font-weight: 800;
-      color: #111;
-      line-height: 1.2;
-    }
-
-    .pr-subtitle {
-      font-size: 8pt;
-      color: #555;
-      margin-top: 3pt;
-      letter-spacing: 0.5pt;
-      text-transform: uppercase;
-    }
-
-    .pr-meta {
-      text-align: right;
-      font-size: 8pt;
-      color: #555;
-      line-height: 1.6;
-    }
-
-    /* Cards de resumo */
-    .pr-summary {
-      display: flex;
-      gap: 8pt;
-      margin-bottom: 14pt;
-    }
-
-    .pr-sum-card {
-      flex: 1;
-      border: 1pt solid #ddd;
-      border-radius: 4pt;
-      padding: 8pt 10pt;
-    }
-
-    .pr-sum-card.card-cad   { border-left: 4pt solid #c8880a; }
-    .pr-sum-card.card-civel { border-left: 4pt solid #1e7fa0; }
-    .pr-sum-card.card-trab  { border-left: 4pt solid #2e8c55; }
-    .pr-sum-card.card-total { border-left: 4pt solid #111; }
-
-    .pr-sum-label {
-      font-size: 6.5pt;
-      text-transform: uppercase;
-      letter-spacing: 0.5pt;
-      color: #666;
-      margin-bottom: 3pt;
-    }
-
-    .pr-sum-value {
-      font-size: 14pt;
-      font-weight: 700;
-      font-family: 'Syne', sans-serif;
-      color: #111;
-      line-height: 1;
-    }
-
-    .pr-sum-sub {
-      font-size: 6.5pt;
-      color: #888;
-      margin-top: 2pt;
-    }
-
-    /* Tabela principal */
-    .pr-table-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 9pt;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5pt;
-      color: #333;
-      margin-bottom: 6pt;
-      padding-bottom: 4pt;
-      border-bottom: 1pt solid #eee;
-    }
-
-    .pr-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 8pt;
-      page-break-inside: auto;
-    }
-
-    .pr-table thead th {
-      background: #f2f2f2 !important;
-      color: #333 !important;
-      padding: 5pt 6pt;
-      text-align: left;
-      font-size: 7pt;
-      text-transform: uppercase;
-      letter-spacing: 0.3pt;
-      border: 1pt solid #ddd;
-      position: static !important;
-    }
-
-    .pr-table thead th.th-cad   { background: #fdf4e2 !important; }
-    .pr-table thead th.th-civel { background: #e8f5fd !important; }
-    .pr-table thead th.th-trab  { background: #e8faf0 !important; }
-
-    .pr-table tbody tr { page-break-inside: avoid; }
-
-    .pr-table tbody td {
-      padding: 4pt 6pt;
-      border: 0.5pt solid #e5e5e5;
-      vertical-align: middle;
-    }
-
-    .pr-table tbody tr:nth-child(even) { background: #fafafa !important; }
-
-    .pr-table tbody tr.pr-non-working {
-      background: #f8f0f0 !important;
-      color: #aaa !important;
-    }
-
-    .pr-table tbody tr.pr-today {
-      background: #fffbe8 !important;
-    }
-
-    .pr-table tbody tr.pr-today td:first-child {
-      border-left: 3pt solid #c8880a;
-    }
-
-    .pr-table td.pr-day-num   { font-weight: 600; color: #333; width: 26pt; text-align: center; }
-    .pr-table td.pr-day-name  { color: #555; font-size: 7.5pt; }
-    .pr-table td.pr-wd        { color: #999; font-size: 7pt; text-align: center; }
-
-    .pr-table td.pr-cad-counter   { color: #c8880a; font-weight: 600; }
-    .pr-table td.pr-cad-copies    { color: #c8880a; }
-    .pr-table td.pr-civel-counter { color: #1e7fa0; font-weight: 600; }
-    .pr-table td.pr-civel-copies  { color: #1e7fa0; }
-    .pr-table td.pr-trab-counter  { color: #2e8c55; font-weight: 600; }
-    .pr-table td.pr-trab-copies   { color: #2e8c55; }
-
-    .pr-table td.pr-empty { color: #ccc; text-align: center; }
-
-    /* Linha de totais */
-    .pr-table tbody tr.pr-totals td {
-      background: #f0f0f0 !important;
-      font-weight: 700;
-      border-top: 1.5pt solid #999;
-      font-size: 8.5pt;
-    }
-
-    /* Legenda de feriados */
-    .pr-holidays {
-      margin-top: 12pt;
-      font-size: 7.5pt;
-      color: #666;
-    }
-
-    .pr-holidays-title {
-      font-weight: 700;
-      font-size: 7.5pt;
-      color: #333;
-      margin-bottom: 4pt;
-    }
-
-    .pr-holiday-item {
-      display: inline-block;
-      margin-right: 12pt;
-      color: #c0392b;
-    }
-
-    /* Rodapé */
-    .pr-footer {
-      margin-top: 14pt;
-      padding-top: 6pt;
-      border-top: 1pt solid #ddd;
-      display: flex;
-      justify-content: space-between;
-      font-size: 7pt;
-      color: #aaa;
-    }
-
-    /* Filtro por setor — oculta colunas */
-    body.print-cad   .pr-col-civel,
-    body.print-cad   .pr-col-trab,
-    body.print-civel .pr-col-cad,
-    body.print-civel .pr-col-trab,
-    body.print-trab  .pr-col-cad,
-    body.print-trab  .pr-col-civel { display: none !important; }
-
-    body.print-cad   .pr-sum-civel,
-    body.print-cad   .pr-sum-trab,
-    body.print-civel .pr-sum-cad,
-    body.print-civel .pr-sum-trab,
-    body.print-trab  .pr-sum-cad,
-    body.print-trab  .pr-sum-civel { display: none !important; }
-  }
-
-  /* Na tela, o relatório fica oculto */
-  #printReport { display: none; }
-
-  @media (max-width: 600px) {
-    .sectors-grid { grid-template-columns: 1fr; }
-    header { flex-direction: column; }
-    .header-meta { align-items: flex-start; }
-  }
+@media (max-width: 600px) {
+  .sectors { grid-template-columns: 1fr; }
+  header { flex-direction: column; }
+  .h-right { align-items: flex-start; }
+}
 </style>
 </head>
 <body>
 
-<!-- ===========================
-     INTERFACE NORMAL (TELA)
-=========================== -->
+<!-- ══════════ TELA PRINCIPAL ══════════ -->
 <header>
-  <div class="header-title">
-    <h1>Controle de Cópias & Impressões</h1>
-    <p>Distribuição diária por dias úteis</p>
+  <div class="h-left">
+    <h1>Cópias <span>&</span> Impressões</h1>
+    <p>247ª Subseção OAB — Santana de Parnaíba &nbsp;·&nbsp; Distribuição por dias úteis</p>
   </div>
-  <div class="header-meta">
-    <div class="month-selector">
+  <div class="h-right">
+    <div class="month-row">
       <label>Mês</label>
       <input type="month" id="monthPicker">
     </div>
-    <div class="working-days-badge">
-      Dias úteis: <span id="workingDaysCount">—</span>
-    </div>
+    <div class="wd-badge">Dias úteis: <strong id="wdCount">—</strong></div>
   </div>
 </header>
 
-<div class="sectors-grid">
-  <!-- CAD -->
-  <div class="sector-card cad">
-    <div class="sector-header">
-      <span class="sector-name">📋 CAD</span>
-      <span class="sector-total-badge" id="badge-cad">Total: —</span>
+<!-- Setores -->
+<div class="sectors">
+  <div class="card cad">
+    <div class="card-head">
+      <span class="card-name">📋 CAD</span>
+      <span class="card-badge" id="badge-cad">Total: —</span>
     </div>
-    <div class="counter-inputs">
-      <div class="input-group">
+    <div class="inputs-row">
+      <div class="igrp">
         <label>Contador Inicial</label>
-        <input type="number" id="cad-start" placeholder="0" min="0">
+        <input type="number" id="cad-s" placeholder="0" min="0">
       </div>
-      <div class="input-group">
+      <div class="igrp">
         <label>Contador Final</label>
-        <input type="number" id="cad-end" placeholder="0" min="0">
+        <input type="number" id="cad-e" placeholder="0" min="0">
       </div>
     </div>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-cad"></div></div>
-      <div class="progress-label">
-        <span id="prog-cad-label">Hoje: dia — de —</span>
-        <span id="prog-cad-pct">0%</span>
-      </div>
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="pg-cad"></div></div>
+      <div class="prog-labels"><span id="pg-cad-lbl">—</span><span id="pg-cad-pct"></span></div>
     </div>
   </div>
 
-  <!-- CÍVEL -->
-  <div class="sector-card civel">
-    <div class="sector-header">
-      <span class="sector-name">⚖️ Fórum Cível</span>
-      <span class="sector-total-badge" id="badge-civel">Total: —</span>
+  <div class="card civel">
+    <div class="card-head">
+      <span class="card-name">⚖️ Fórum Cível</span>
+      <span class="card-badge" id="badge-civ">Total: —</span>
     </div>
-    <div class="counter-inputs">
-      <div class="input-group">
+    <div class="inputs-row">
+      <div class="igrp">
         <label>Contador Inicial</label>
-        <input type="number" id="civel-start" placeholder="0" min="0">
+        <input type="number" id="civ-s" placeholder="0" min="0">
       </div>
-      <div class="input-group">
+      <div class="igrp">
         <label>Contador Final</label>
-        <input type="number" id="civel-end" placeholder="0" min="0">
+        <input type="number" id="civ-e" placeholder="0" min="0">
       </div>
     </div>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-civel"></div></div>
-      <div class="progress-label">
-        <span id="prog-civel-label">Hoje: dia — de —</span>
-        <span id="prog-civel-pct">0%</span>
-      </div>
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="pg-civ"></div></div>
+      <div class="prog-labels"><span id="pg-civ-lbl">—</span><span id="pg-civ-pct"></span></div>
     </div>
   </div>
 
-  <!-- TRABALHISTA -->
-  <div class="sector-card trabalhista">
-    <div class="sector-header">
-      <span class="sector-name">🏛️ Fórum Trabalhista</span>
-      <span class="sector-total-badge" id="badge-trab">Total: —</span>
+  <div class="card trab">
+    <div class="card-head">
+      <span class="card-name">🏛️ Fórum Trabalhista</span>
+      <span class="card-badge" id="badge-trb">Total: —</span>
     </div>
-    <div class="counter-inputs">
-      <div class="input-group">
+    <div class="inputs-row">
+      <div class="igrp">
         <label>Contador Inicial</label>
-        <input type="number" id="trab-start" placeholder="0" min="0">
+        <input type="number" id="trb-s" placeholder="0" min="0">
       </div>
-      <div class="input-group">
+      <div class="igrp">
         <label>Contador Final</label>
-        <input type="number" id="trab-end" placeholder="0" min="0">
+        <input type="number" id="trb-e" placeholder="0" min="0">
       </div>
     </div>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-track"><div class="progress-bar-fill" id="prog-trab"></div></div>
-      <div class="progress-label">
-        <span id="prog-trab-label">Hoje: dia — de —</span>
-        <span id="prog-trab-pct">0%</span>
-      </div>
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="pg-trb"></div></div>
+      <div class="prog-labels"><span id="pg-trb-lbl">—</span><span id="pg-trb-pct"></span></div>
     </div>
   </div>
 </div>
 
-<div class="summary-cards" id="summaryCards" style="display:none">
-  <div class="summary-card sc-cad">
-    <div class="sc-label">CAD — Cópias/dia</div>
-    <div class="sc-value" id="sum-cad-day" style="color:var(--accent-cad)">—</div>
-    <div class="sc-sub" id="sum-cad-total">Total: —</div>
+<!-- Sumário -->
+<div class="summary-grid" id="sumGrid" style="display:none">
+  <div class="sc">
+    <div class="sc-label">CAD — média/dia</div>
+    <div class="sc-val" id="sc-cad-d" style="color:var(--cad)">—</div>
+    <div class="sc-sub" id="sc-cad-t">Total: —</div>
   </div>
-  <div class="summary-card sc-civel">
-    <div class="sc-label">Cível — Cópias/dia</div>
-    <div class="sc-value" id="sum-civel-day" style="color:var(--accent-civel)">—</div>
-    <div class="sc-sub" id="sum-civel-total">Total: —</div>
+  <div class="sc">
+    <div class="sc-label">Cível — média/dia</div>
+    <div class="sc-val" id="sc-civ-d" style="color:var(--civel)">—</div>
+    <div class="sc-sub" id="sc-civ-t">Total: —</div>
   </div>
-  <div class="summary-card sc-trab">
-    <div class="sc-label">Trabalhista — Cópias/dia</div>
-    <div class="sc-value" id="sum-trab-day" style="color:var(--accent-trab)">—</div>
-    <div class="sc-sub" id="sum-trab-total">Total: —</div>
+  <div class="sc">
+    <div class="sc-label">Trabalhista — média/dia</div>
+    <div class="sc-val" id="sc-trb-d" style="color:var(--trab)">—</div>
+    <div class="sc-sub" id="sc-trb-t">Total: —</div>
   </div>
-  <div class="summary-card sc-total">
+  <div class="sc">
     <div class="sc-label">Total Geral do Mês</div>
-    <div class="sc-value" id="sum-total" style="color:var(--text)">—</div>
-    <div class="sc-sub" id="sum-days">— dias úteis</div>
+    <div class="sc-val" id="sc-grand" style="color:var(--white)">—</div>
+    <div class="sc-sub" id="sc-grand-s">— dias úteis</div>
   </div>
 </div>
 
-<div class="table-section">
-  <div class="table-section-header">
+<!-- Feriados -->
+<div class="section-box">
+  <div class="sec-head">
     <h2>📅 Distribuição Diária</h2>
-    <div class="holiday-controls">
-      <div class="holiday-input-wrap">
-        <input type="date" id="holidayInput" title="Adicionar feriado">
-        <button class="btn btn-danger" onclick="addHoliday()">+ Feriado</button>
-      </div>
+    <div class="hol-ctrl">
+      <input type="date" id="holInput" title="Adicionar feriado">
+      <button class="btn btn-danger" onclick="addHol()">+ Feriado</button>
     </div>
   </div>
-  <div class="holidays-list" id="holidaysList"></div>
-  <div class="table-scroll">
+  <div class="hol-list" id="holList"></div>
+  <div class="tbl-scroll">
     <table>
       <thead>
         <tr>
-          <th>#</th>
           <th>Dia</th>
           <th>Semana</th>
-          <th class="th-cad">CAD — Contador</th>
-          <th class="th-cad">CAD — Cópias/dia</th>
-          <th class="th-civel">Cível — Contador</th>
-          <th class="th-civel">Cível — Cópias/dia</th>
-          <th class="th-trab">Trabalhista — Contador</th>
-          <th class="th-trab">Trabalhista — Cópias/dia</th>
+          <th>Útil#</th>
+          <!-- CAD -->
+          <th class="h-cad">CAD Inicial</th>
+          <th class="h-cad">CAD Final</th>
+          <th class="h-cad">CAD +Cópias</th>
+          <!-- CÍVEL -->
+          <th class="h-civel">Cível Inicial</th>
+          <th class="h-civel">Cível Final</th>
+          <th class="h-civel">Cível +Cópias</th>
+          <!-- TRABALHISTA -->
+          <th class="h-trab">Trab. Inicial</th>
+          <th class="h-trab">Trab. Final</th>
+          <th class="h-trab">Trab. +Cópias</th>
         </tr>
       </thead>
-      <tbody id="tableBody">
-        <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-dim)">Preencha os contadores acima para gerar a distribuição</td></tr>
+      <tbody id="tBody">
+        <tr><td colspan="12" style="text-align:center;padding:36px;color:var(--dim)">Preencha os contadores acima para gerar a distribuição</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<div class="actions-bar">
+<div class="actions">
   <button class="btn btn-ghost" onclick="clearAll()">Limpar tudo</button>
-  <button class="btn btn-primary" onclick="openPrintModal()">🖨️ Imprimir Relatório</button>
+  <button class="btn btn-primary" onclick="openModal()">🖨️ Imprimir Relatório</button>
 </div>
 
-<!-- PRINT MODAL -->
-<div class="print-modal-overlay" id="printModal">
-  <div class="print-modal">
+<!-- Modal de impressão -->
+<div class="modal-ov" id="printModal">
+  <div class="modal">
     <h3>🖨️ Imprimir Relatório</h3>
-    <p class="print-hint">Selecione o setor desejado. O relatório será gerado em A4, com cabeçalho, resumo e tabela completa.</p>
-    <div class="print-options">
-      <div class="print-option" id="popt-cad"   onclick="selectPrint('cad')">
-        <span class="print-dot dot-cad"></span> 📋 CAD
-      </div>
-      <div class="print-option" id="popt-civel" onclick="selectPrint('civel')">
-        <span class="print-dot dot-civel"></span> ⚖️ Fórum Cível
-      </div>
-      <div class="print-option" id="popt-trab"  onclick="selectPrint('trab')">
-        <span class="print-dot dot-trab"></span> 🏛️ Fórum Trabalhista
-      </div>
-      <div class="print-option selected-all" id="popt-all" onclick="selectPrint('all')">
-        <span class="print-dot dot-all"></span> Todos os setores
-      </div>
+    <p>Escolha o setor ou imprima todos juntos. Formato A4, com cabeçalho, resumo e tabela completa.</p>
+    <div class="popts">
+      <div class="popt" id="po-cad"   onclick="selPrint('cad')"><span class="pdot pdot-cad"></span>📋 CAD</div>
+      <div class="popt" id="po-civel" onclick="selPrint('civel')"><span class="pdot pdot-civel"></span>⚖️ Fórum Cível</div>
+      <div class="popt" id="po-trab"  onclick="selPrint('trab')"><span class="pdot pdot-trab"></span>🏛️ Fórum Trabalhista</div>
+      <div class="popt sel-all" id="po-all" onclick="selPrint('all')"><span class="pdot pdot-all"></span>Todos os setores</div>
     </div>
-    <div class="print-modal-actions">
-      <button class="btn btn-ghost" onclick="closePrintModal()">Cancelar</button>
+    <div class="modal-acts">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-primary" onclick="confirmPrint()">Imprimir</button>
     </div>
   </div>
 </div>
 
-<!-- ===========================
-     RELATÓRIO DE IMPRESSÃO
-     (oculto na tela, visível ao imprimir)
-=========================== -->
-<div id="printReport">
-  <!-- Conteúdo gerado via JS antes de imprimir -->
-</div>
+<!-- Relatório de impressão (oculto na tela) -->
+<div id="printReport"></div>
 
 <script>
-  const DAYS_PT   = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+// ══════════════════════════════════════════════
+//  CONSTANTES
+// ══════════════════════════════════════════════
+const DAYS   = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-  const FERIADOS_OAB_2026 = {
-    '2026-01-01':'Confraternização Universal',
-    '2026-02-16':'Ponte do Carnaval',
-    '2026-02-17':'Carnaval',
-    '2026-04-02':'Ponte – Endoenças',
-    '2026-04-03':'Sexta-Feira Santa',
-    '2026-04-20':'Ponte – Tiradentes',
-    '2026-04-21':'Tiradentes',
-    '2026-05-01':'Dia do Trabalho',
-    '2026-06-04':'Corpus Christi',
-    '2026-06-05':'Ponte – Corpus Christi',
-    '2026-07-09':'Revolução Constitucionalista SP',
-    '2026-07-10':'Ponte – Revolução Constitucionalista SP',
-    '2026-09-07':'Independência do Brasil',
-    '2026-10-12':'Nossa Senhora Aparecida',
-    '2026-11-02':'Finados',
-    '2026-11-20':'Consciência Negra',
-    '2026-12-25':'Natal',
-  };
-  for (let d = 2; d <= 9; d++) {
-    FERIADOS_OAB_2026['2026-01-0' + d] = 'Férias Coletivas 2025/2026';
-  }
+// Feriados OAB 2026 (incluindo férias coletivas de 2/1 a 9/1)
+const OAB_FERIADOS = {
+  '2026-01-01':'Confraternização Universal',
+  '2026-01-02':'Férias Coletivas',
+  '2026-01-05':'Férias Coletivas',
+  '2026-01-06':'Férias Coletivas',
+  '2026-01-07':'Férias Coletivas',
+  '2026-01-08':'Férias Coletivas',
+  '2026-01-09':'Férias Coletivas',
+  '2026-02-16':'Ponte do Carnaval',
+  '2026-02-17':'Carnaval',
+  '2026-04-02':'Ponte – Endoenças',
+  '2026-04-03':'Sexta-Feira Santa',
+  '2026-04-20':'Ponte – Tiradentes',
+  '2026-04-21':'Tiradentes',
+  '2026-05-01':'Dia do Trabalho',
+  '2026-06-04':'Corpus Christi',
+  '2026-06-05':'Ponte – Corpus Christi',
+  '2026-07-09':'Revolução Constitucionalista SP',
+  '2026-07-10':'Ponte – Revolução Constitucionalista',
+  '2026-09-07':'Independência do Brasil',
+  '2026-10-12':'Nossa Senhora Aparecida',
+  '2026-11-02':'Finados',
+  '2026-11-20':'Consciência Negra',
+  '2026-12-25':'Natal',
+};
 
-  let holidays = [];
-  let currentMonth, currentYear;
-  let lastCalc = {};
+// Estado
+let holidays = [];
+let cy, cm;
+let lastCalc = {};
+let printSector = 'all';
 
-  function loadHolidaysForMonth(year, month) {
-    const prefix = year + '-' + String(month+1).padStart(2,'0') + '-';
-    holidays = Object.keys(FERIADOS_OAB_2026).filter(k => k.startsWith(prefix));
-  }
+// ══════════════════════════════════════════════
+//  INICIALIZAÇÃO
+// ══════════════════════════════════════════════
+const today  = new Date();
+const picker = document.getElementById('monthPicker');
+cy = today.getFullYear();
+cm = today.getMonth();
+picker.value = `${cy}-${String(cm+1).padStart(2,'0')}`;
+loadHols(cy, cm);
 
-  const today   = new Date();
-  const picker  = document.getElementById('monthPicker');
-  picker.value  = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0');
-  currentYear   = today.getFullYear();
-  currentMonth  = today.getMonth();
-  loadHolidaysForMonth(currentYear, currentMonth);
-
-  picker.addEventListener('change', () => {
-    const [y, m] = picker.value.split('-');
-    currentYear  = parseInt(y);
-    currentMonth = parseInt(m) - 1;
-    loadHolidaysForMonth(currentYear, currentMonth);
-    renderHolidays();
-    calculate();
-  });
-
-  ['cad','civel','trab'].forEach(s => {
-    document.getElementById(s + '-start').addEventListener('input', calculate);
-    document.getElementById(s + '-end').addEventListener('input', calculate);
-  });
-
-  function fmtDate(date) {
-    return date.getFullYear() + '-'
-      + String(date.getMonth()+1).padStart(2,'0') + '-'
-      + String(date.getDate()).padStart(2,'0');
-  }
-
-  function isWeekend(date)  { const d = date.getDay(); return d===0||d===6; }
-  function isHoliday(date)  { return holidays.includes(fmtDate(date)); }
-  function isWorkingDay(d)  { return !isWeekend(d) && !isHoliday(d); }
-
-  function getDaysInMonth(y, m) { return new Date(y, m+1, 0).getDate(); }
-
-  function getWorkingDays(y, m) {
-    const days = [];
-    const total = getDaysInMonth(y, m);
-    for (let d = 1; d <= total; d++) {
-      if (isWorkingDay(new Date(y, m, d))) days.push(d);
-    }
-    return days;
-  }
-
-  function seededRng(seed) {
-    let s = seed;
-    return function() {
-      s = (s * 1664525 + 1013904223) & 0xffffffff;
-      return (s >>> 0) / 0xffffffff;
-    };
-  }
-
-  function distributeCounters(start, end, workingDays, sectorKey) {
-    const total = end - start;
-    if (total <= 0 || workingDays.length === 0) return null;
-    const n = workingDays.length;
-    const seedVal = sectorKey.split('').reduce((a,c)=>a+c.charCodeAt(0),0)
-                  + currentYear * 100 + currentMonth + total;
-    const rand = seededRng(seedVal);
-
-    const raw = workingDays.map((day) => {
-      const dow = new Date(currentYear, currentMonth, day).getDay();
-      let w = 0.5 + rand();
-      if (dow===1) w *= 1.15 + rand()*0.2;
-      if (dow===5) w *= 1.10 + rand()*0.15;
-      if (dow===3 && rand()>0.6) w *= 0.75;
-      if (rand()<0.10) w *= 1.8 + rand()*1.2;
-      if (rand()<0.12) w *= 0.4 + rand()*0.3;
-      return Math.max(w, 0.05);
-    });
-
-    const sumRaw = raw.reduce((a,b)=>a+b,0);
-    let copies = raw.map(w => Math.max(1, Math.round((w/sumRaw)*total)));
-    let diff = total - copies.reduce((a,b)=>a+b,0);
-    let attempts = n * 2;
-    while (diff !== 0 && attempts-- > 0) {
-      const idx = Math.floor(rand()*n);
-      if (diff > 0)            { copies[idx]++; diff--; }
-      else if (copies[idx]>1)  { copies[idx]--; diff++; }
-    }
-    copies[n-1] += diff;
-    if (copies[n-1]<1) copies[n-1]=1;
-
-    const counters = {};
-    let running = start;
-    workingDays.forEach((day,i) => {
-      running += copies[i];
-      counters[day] = { counter: running, copies: copies[i] };
-    });
-    return counters;
-  }
-
-  function calculate() {
-    const cadStart = parseInt(document.getElementById('cad-start').value) || 0;
-    const cadEnd   = parseInt(document.getElementById('cad-end').value)   || 0;
-    const civStart = parseInt(document.getElementById('civel-start').value) || 0;
-    const civEnd   = parseInt(document.getElementById('civel-end').value)   || 0;
-    const trbStart = parseInt(document.getElementById('trab-start').value) || 0;
-    const trbEnd   = parseInt(document.getElementById('trab-end').value)   || 0;
-
-    const workingDays = getWorkingDays(currentYear, currentMonth);
-    const n = workingDays.length;
-    document.getElementById('workingDaysCount').textContent = n;
-
-    const cadTotal = cadEnd - cadStart;
-    const civTotal = civEnd - civStart;
-    const trbTotal = trbEnd - trbStart;
-
-    document.getElementById('badge-cad').textContent   = cadTotal>0 ? 'Total: '+cadTotal.toLocaleString('pt-BR') : 'Total: —';
-    document.getElementById('badge-civel').textContent = civTotal>0 ? 'Total: '+civTotal.toLocaleString('pt-BR') : 'Total: —';
-    document.getElementById('badge-trab').textContent  = trbTotal>0 ? 'Total: '+trbTotal.toLocaleString('pt-BR') : 'Total: —';
-
-    const cadDist = cadEnd>cadStart ? distributeCounters(cadStart, cadEnd, workingDays, 'cad')   : null;
-    const civDist = civEnd>civStart ? distributeCounters(civStart, civEnd, workingDays, 'civel') : null;
-    const trbDist = trbEnd>trbStart ? distributeCounters(trbStart, trbEnd, workingDays, 'trab')  : null;
-
-    const isCurrentMonth = today.getFullYear()===currentYear && today.getMonth()===currentMonth;
-    const todayWorkIndex = isCurrentMonth ? workingDays.indexOf(today.getDate()) : -1;
-
-    updateProgress('cad',  cadDist,  workingDays, todayWorkIndex, n);
-    updateProgress('civel', civDist, workingDays, todayWorkIndex, n);
-    updateProgress('trab',  trbDist, workingDays, todayWorkIndex, n);
-
-    const anyData = cadDist || civDist || trbDist;
-    document.getElementById('summaryCards').style.display = anyData ? 'grid' : 'none';
-    if (anyData) {
-      const cadPD = n>0&&cadTotal>0 ? Math.round(cadTotal/n) : 0;
-      const civPD = n>0&&civTotal>0 ? Math.round(civTotal/n) : 0;
-      const trbPD = n>0&&trbTotal>0 ? Math.round(trbTotal/n) : 0;
-      document.getElementById('sum-cad-day').textContent    = cadPD>0 ? '~'+cadPD.toLocaleString('pt-BR') : '—';
-      document.getElementById('sum-cad-total').textContent  = 'Total: '+(cadTotal>0?cadTotal.toLocaleString('pt-BR'):'—');
-      document.getElementById('sum-civel-day').textContent  = civPD>0 ? '~'+civPD.toLocaleString('pt-BR') : '—';
-      document.getElementById('sum-civel-total').textContent= 'Total: '+(civTotal>0?civTotal.toLocaleString('pt-BR'):'—');
-      document.getElementById('sum-trab-day').textContent   = trbPD>0 ? '~'+trbPD.toLocaleString('pt-BR') : '—';
-      document.getElementById('sum-trab-total').textContent = 'Total: '+(trbTotal>0?trbTotal.toLocaleString('pt-BR'):'—');
-      const grand = (cadTotal>0?cadTotal:0)+(civTotal>0?civTotal:0)+(trbTotal>0?trbTotal:0);
-      document.getElementById('sum-total').textContent = grand>0 ? grand.toLocaleString('pt-BR') : '—';
-      document.getElementById('sum-days').textContent  = n+' dias úteis — '+MONTHS_PT[currentMonth]+' '+currentYear;
-    }
-
-    buildTable(cadDist, civDist, trbDist, workingDays, isCurrentMonth);
-
-    // Salva estado para o relatório de impressão
-    lastCalc = {
-      cadDist, civDist, trbDist,
-      cadStart, cadEnd, civStart, civEnd, trbStart, trbEnd,
-      cadTotal, civTotal, trbTotal,
-      workingDays, n, isCurrentMonth,
-      cadPD: n>0&&cadTotal>0?Math.round(cadTotal/n):0,
-      civPD: n>0&&civTotal>0?Math.round(civTotal/n):0,
-      trbPD: n>0&&trbTotal>0?Math.round(trbTotal/n):0,
-    };
-  }
-
-  function updateProgress(id, dist, workingDays, todayWorkIndex, n) {
-    const fill  = document.getElementById('prog-' + id);
-    const label = document.getElementById('prog-' + id + '-label');
-    const pct   = document.getElementById('prog-' + id + '-pct');
-    if (!dist || n===0 || todayWorkIndex<0) {
-      fill.style.width = '0%';
-      label.textContent = todayWorkIndex<0 ? (n>0 ? n+' dias úteis' : '—') : 'Hoje não é dia útil';
-      pct.textContent = '';
-      return;
-    }
-    const p = Math.round(((todayWorkIndex+1)/n)*100);
-    fill.style.width = p+'%';
-    label.textContent = 'Hoje: dia útil '+(todayWorkIndex+1)+' de '+n;
-    pct.textContent = p+'%';
-  }
-
-  function buildTable(cadDist, civDist, trbDist, workingDays, isCurrentMonth) {
-    const body  = document.getElementById('tableBody');
-    const total = getDaysInMonth(currentYear, currentMonth);
-    if (!cadDist && !civDist && !trbDist) {
-      body.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-dim)">Preencha os contadores acima para gerar a distribuição</td></tr>';
-      return;
-    }
-    let html = '';
-    let wdCount = 0;
-    for (let d = 1; d <= total; d++) {
-      const date    = new Date(currentYear, currentMonth, d);
-      const working = isWorkingDay(date);
-      const isHol   = isHoliday(date);
-      const isTod   = isCurrentMonth && d===today.getDate();
-      const dayName = DAYS_PT[date.getDay()];
-      if (working) wdCount++;
-
-      let statusLabel = '';
-      if (!working) {
-        const hKey = fmtDate(date);
-        if (isHol) statusLabel = ' 🔴 '+(FERIADOS_OAB_2026[hKey]||'Feriado');
-        else if (date.getDay()===0) statusLabel = ' ☀️ Domingo';
-        else statusLabel = ' 🔵 Sábado';
-      }
-
-      const cadCell = working && cadDist ? cadDist[d] : null;
-      const civCell = working && civDist ? civDist[d] : null;
-      const trbCell = working && trbDist ? trbDist[d] : null;
-
-      const rowClass = [(working?'':'non-working'),(isTod?'today':'')].join(' ').trim();
-      html += `<tr class="${rowClass}">
-        <td class="day-num">${String(d).padStart(2,'0')}</td>
-        <td class="day-name">${dayName}${isTod?' ◀ Hoje':''}${statusLabel}</td>
-        <td class="day-name">${working?'Dia útil '+wdCount:'—'}</td>
-        <td class="counter-val cad td-cad">${cadCell?cadCell.counter.toLocaleString('pt-BR'):(working?'—':'')}</td>
-        <td class="daily-copies td-cad ${cadCell?'highlight':''}">${cadCell?'+'+cadCell.copies.toLocaleString('pt-BR'):''}</td>
-        <td class="counter-val civel td-civel">${civCell?civCell.counter.toLocaleString('pt-BR'):(working?'—':'')}</td>
-        <td class="daily-copies td-civel ${civCell?'highlight':''}">${civCell?'+'+civCell.copies.toLocaleString('pt-BR'):''}</td>
-        <td class="counter-val trab td-trab">${trbCell?trbCell.counter.toLocaleString('pt-BR'):(working?'—':'')}</td>
-        <td class="daily-copies td-trab ${trbCell?'highlight':''}">${trbCell?'+'+trbCell.copies.toLocaleString('pt-BR'):''}</td>
-      </tr>`;
-    }
-    body.innerHTML = html;
-    if (isCurrentMonth) {
-      setTimeout(()=>{
-        const todayRow = body.querySelector('tr.today');
-        if (todayRow) todayRow.scrollIntoView({block:'center',behavior:'smooth'});
-      },100);
-    }
-  }
-
-  // ============================================================
-  //  GERAÇÃO DO RELATÓRIO DE IMPRESSÃO
-  // ============================================================
-  function buildPrintReport(sector) {
-    const {
-      cadDist, civDist, trbDist,
-      cadStart, cadEnd, civStart, civEnd, trbStart, trbEnd,
-      cadTotal, civTotal, trbTotal,
-      workingDays, n, isCurrentMonth,
-      cadPD, civPD, trbPD
-    } = lastCalc;
-
-    const mesAno = MONTHS_PT[currentMonth] + ' / ' + currentYear;
-    const now    = new Date();
-    const emissao= now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
-    const grand  = (cadTotal>0?cadTotal:0)+(civTotal>0?civTotal:0)+(trbTotal>0?trbTotal:0);
-
-    // Nome do setor para título
-    const sectorLabel = { cad:'CAD', civel:'Fórum Cível', trab:'Fórum Trabalhista', all:'Todos os Setores' };
-
-    // ---- Cabeçalho ----
-    let html = `
-    <div class="pr-header">
-      <div class="pr-header-top">
-        <div>
-          <div class="pr-title">Controle de Cópias & Impressões</div>
-          <div class="pr-subtitle">247ª Subseção OAB — Santana de Parnaíba &nbsp;|&nbsp; ${mesAno} &nbsp;|&nbsp; ${sectorLabel[sector]}</div>
-        </div>
-        <div class="pr-meta">
-          <div>Emitido em: ${emissao}</div>
-          <div>Dias úteis: ${n}</div>
-        </div>
-      </div>
-    </div>`;
-
-    // ---- Cards de resumo ----
-    html += `<div class="pr-summary">`;
-    if (sector==='all'||sector==='cad') {
-      html += `<div class="pr-sum-card card-cad pr-sum-cad">
-        <div class="pr-sum-label">CAD</div>
-        <div class="pr-sum-value">${cadTotal>0?cadTotal.toLocaleString('pt-BR'):'—'}</div>
-        <div class="pr-sum-sub">${cadTotal>0?'~'+cadPD.toLocaleString('pt-BR')+'/dia &nbsp;|&nbsp; '+cadStart.toLocaleString('pt-BR')+' → '+cadEnd.toLocaleString('pt-BR'):''}</div>
-      </div>`;
-    }
-    if (sector==='all'||sector==='civel') {
-      html += `<div class="pr-sum-card card-civel pr-sum-civel">
-        <div class="pr-sum-label">Fórum Cível</div>
-        <div class="pr-sum-value">${civTotal>0?civTotal.toLocaleString('pt-BR'):'—'}</div>
-        <div class="pr-sum-sub">${civTotal>0?'~'+civPD.toLocaleString('pt-BR')+'/dia &nbsp;|&nbsp; '+civStart.toLocaleString('pt-BR')+' → '+civEnd.toLocaleString('pt-BR'):''}</div>
-      </div>`;
-    }
-    if (sector==='all'||sector==='trab') {
-      html += `<div class="pr-sum-card card-trab pr-sum-trab">
-        <div class="pr-sum-label">Fórum Trabalhista</div>
-        <div class="pr-sum-value">${trbTotal>0?trbTotal.toLocaleString('pt-BR'):'—'}</div>
-        <div class="pr-sum-sub">${trbTotal>0?'~'+trbPD.toLocaleString('pt-BR')+'/dia &nbsp;|&nbsp; '+trbStart.toLocaleString('pt-BR')+' → '+trbEnd.toLocaleString('pt-BR'):''}</div>
-      </div>`;
-    }
-    if (sector==='all') {
-      html += `<div class="pr-sum-card card-total pr-sum-total">
-        <div class="pr-sum-label">Total Geral</div>
-        <div class="pr-sum-value">${grand>0?grand.toLocaleString('pt-BR'):'—'}</div>
-        <div class="pr-sum-sub">${n} dias úteis no mês</div>
-      </div>`;
-    }
-    html += `</div>`;
-
-    // ---- Tabela ----
-    const showCad   = (sector==='all'||sector==='cad')   && cadDist;
-    const showCivel = (sector==='all'||sector==='civel') && civDist;
-    const showTrab  = (sector==='all'||sector==='trab')  && trbDist;
-
-    html += `<div class="pr-table-title">Distribuição Diária — ${mesAno}</div>`;
-    html += `<table class="pr-table"><thead><tr>
-      <th>Dia</th>
-      <th>Semana</th>
-      <th>Dia Útil</th>`;
-    if (showCad)   html += `<th class="pr-col-cad"   style="background:#fdf4e2">Contador CAD</th><th class="pr-col-cad"   style="background:#fdf4e2">Cópias CAD</th>`;
-    if (showCivel) html += `<th class="pr-col-civel" style="background:#e8f5fd">Contador Cível</th><th class="pr-col-civel" style="background:#e8f5fd">Cópias Cível</th>`;
-    if (showTrab)  html += `<th class="pr-col-trab"  style="background:#e8faf0">Contador Trabalhista</th><th class="pr-col-trab"  style="background:#e8faf0">Cópias Trab.</th>`;
-    html += `</tr></thead><tbody>`;
-
-    const total = getDaysInMonth(currentYear, currentMonth);
-    let wdCount = 0;
-    let sumCadCopies=0, sumCivCopies=0, sumTrbCopies=0;
-
-    for (let d = 1; d <= total; d++) {
-      const date    = new Date(currentYear, currentMonth, d);
-      const working = isWorkingDay(date);
-      const isHol   = isHoliday(date);
-      const isTod   = isCurrentMonth && d===today.getDate();
-      const dayName = DAYS_PT[date.getDay()];
-      if (working) wdCount++;
-
-      const cadCell = working && cadDist ? cadDist[d] : null;
-      const civCell = working && civDist ? civDist[d] : null;
-      const trbCell = working && trbDist ? trbDist[d] : null;
-
-      if (cadCell) sumCadCopies += cadCell.copies;
-      if (civCell) sumCivCopies += civCell.copies;
-      if (trbCell) sumTrbCopies += trbCell.copies;
-
-      let rowClass = '';
-      if (!working) rowClass = 'pr-non-working';
-      else if (isTod) rowClass = 'pr-today';
-
-      let dayStatus = '';
-      if (!working) {
-        if (isHol) dayStatus = ' — '+(FERIADOS_OAB_2026[fmtDate(date)]||'Feriado');
-        else if (date.getDay()===0) dayStatus = ' — Domingo';
-        else dayStatus = ' — Sábado';
-      }
-
-      html += `<tr class="${rowClass}">
-        <td class="pr-day-num">${String(d).padStart(2,'0')}${isTod?' ◀':''}</td>
-        <td class="pr-day-name">${dayName}${dayStatus}</td>
-        <td class="pr-wd">${working?wdCount:'—'}</td>`;
-
-      if (showCad) {
-        html += cadCell
-          ? `<td class="pr-cad-counter">${cadCell.counter.toLocaleString('pt-BR')}</td><td class="pr-cad-copies">+${cadCell.copies.toLocaleString('pt-BR')}</td>`
-          : `<td class="pr-empty">—</td><td></td>`;
-      }
-      if (showCivel) {
-        html += civCell
-          ? `<td class="pr-civel-counter">${civCell.counter.toLocaleString('pt-BR')}</td><td class="pr-civel-copies">+${civCell.copies.toLocaleString('pt-BR')}</td>`
-          : `<td class="pr-empty">—</td><td></td>`;
-      }
-      if (showTrab) {
-        html += trbCell
-          ? `<td class="pr-trab-counter">${trbCell.counter.toLocaleString('pt-BR')}</td><td class="pr-trab-copies">+${trbCell.copies.toLocaleString('pt-BR')}</td>`
-          : `<td class="pr-empty">—</td><td></td>`;
-      }
-      html += `</tr>`;
-    }
-
-    // Linha de totais
-    html += `<tr class="pr-totals">
-      <td colspan="3" style="text-align:right">TOTAL DO MÊS</td>`;
-    if (showCad)   html += `<td></td><td class="pr-cad-copies">${sumCadCopies.toLocaleString('pt-BR')} cópias</td>`;
-    if (showCivel) html += `<td></td><td class="pr-civel-copies">${sumCivCopies.toLocaleString('pt-BR')} cópias</td>`;
-    if (showTrab)  html += `<td></td><td class="pr-trab-copies">${sumTrbCopies.toLocaleString('pt-BR')} cópias</td>`;
-    html += `</tr></tbody></table>`;
-
-    // Feriados do mês
-    if (holidays.length > 0) {
-      html += `<div class="pr-holidays"><div class="pr-holidays-title">Feriados / Pontes no mês:</div>`;
-      holidays.sort().forEach(h => {
-        const [y,m,d] = h.split('-');
-        const nome = FERIADOS_OAB_2026[h] || 'Feriado';
-        html += `<span class="pr-holiday-item">${d}/${m} — ${nome}</span>`;
-      });
-      html += `</div>`;
-    }
-
-    // Rodapé
-    html += `<div class="pr-footer">
-      <span>247ª Subseção OAB — Santana de Parnaíba &nbsp;|&nbsp; Rua Alberto Frediani, 770 — Jardim Frediani</span>
-      <span>Emitido em ${emissao}</span>
-    </div>`;
-
-    document.getElementById('printReport').innerHTML = html;
-  }
-
-  // ---- Feriados ----
-  function addHoliday() {
-    const input = document.getElementById('holidayInput');
-    const val   = input.value;
-    if (!val) return;
-    if (!holidays.includes(val)) { holidays.push(val); holidays.sort(); }
-    input.value = '';
-    renderHolidays();
-    calculate();
-  }
-
-  function removeHoliday(val) {
-    holidays = holidays.filter(h => h !== val);
-    renderHolidays();
-    calculate();
-  }
-
-  function renderHolidays() {
-    const list = document.getElementById('holidaysList');
-    if (holidays.length===0) { list.innerHTML=''; return; }
-    list.innerHTML = [...holidays].sort().map(h => {
-      const [y,m,d] = h.split('-');
-      const nome   = FERIADOS_OAB_2026[h] || 'Feriado';
-      const isOAB  = !!FERIADOS_OAB_2026[h];
-      const rmBtn  = isOAB ? '' : `<button onclick="removeHoliday('${h}')">✕</button>`;
-      return `<span class="holiday-tag">${d}/${m} — ${nome}${rmBtn}</span>`;
-    }).join('');
-  }
-
-  function clearAll() {
-    ['cad','civel','trab'].forEach(s => {
-      document.getElementById(s+'-start').value='';
-      document.getElementById(s+'-end').value='';
-    });
-    loadHolidaysForMonth(currentYear, currentMonth);
-    renderHolidays();
-    calculate();
-  }
-
-  // ---- Modal de impressão ----
-  let selectedPrintSector = 'all';
-
-  function openPrintModal() {
-    selectedPrintSector = 'all';
-    document.querySelectorAll('.print-option').forEach(el =>
-      el.classList.remove('selected-cad','selected-civel','selected-trab','selected-all'));
-    document.getElementById('popt-all').classList.add('selected-all');
-    document.getElementById('printModal').classList.add('open');
-  }
-
-  function closePrintModal() {
-    document.getElementById('printModal').classList.remove('open');
-  }
-
-  function selectPrint(sector) {
-    selectedPrintSector = sector;
-    document.querySelectorAll('.print-option').forEach(el =>
-      el.classList.remove('selected-cad','selected-civel','selected-trab','selected-all'));
-    document.getElementById('popt-'+sector).classList.add('selected-'+sector);
-  }
-
-  function confirmPrint() {
-    // Verifica se há dados
-    if (!lastCalc.cadDist && !lastCalc.civDist && !lastCalc.trbDist) {
-      alert('Preencha os contadores antes de imprimir.');
-      return;
-    }
-    closePrintModal();
-    buildPrintReport(selectedPrintSector);
-    document.body.classList.remove('print-cad','print-civel','print-trab');
-    if (selectedPrintSector !== 'all') document.body.classList.add('print-'+selectedPrintSector);
-    setTimeout(() => {
-      window.print();
-      setTimeout(() => document.body.classList.remove('print-cad','print-civel','print-trab'), 500);
-    }, 120);
-  }
-
-  document.getElementById('printModal').addEventListener('click', function(e) {
-    if (e.target===this) closePrintModal();
-  });
-
-  // Init
-  renderHolidays();
+picker.addEventListener('change', () => {
+  const [y, m] = picker.value.split('-');
+  cy = parseInt(y); cm = parseInt(m) - 1;
+  loadHols(cy, cm);
+  renderHols();
   calculate();
+});
+
+['cad','civ','trb'].forEach(s => {
+  document.getElementById(s+'-s').addEventListener('input', calculate);
+  document.getElementById(s+'-e').addEventListener('input', calculate);
+});
+
+// ══════════════════════════════════════════════
+//  FUNÇÕES DE DATA
+// ══════════════════════════════════════════════
+function fmtD(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function isWknd(d)   { const w = d.getDay(); return w===0||w===6; }
+function isHol(d)    { return holidays.includes(fmtD(d)); }
+function isWorkDay(d){ return !isWknd(d) && !isHol(d); }
+function daysInMonth(y,m){ return new Date(y,m+1,0).getDate(); }
+
+function getWorkingDays(y, m) {
+  const res = [];
+  for (let d=1; d<=daysInMonth(y,m); d++) {
+    if (isWorkDay(new Date(y,m,d))) res.push(d);
+  }
+  return res;
+}
+
+function loadHols(y, m) {
+  const prefix = `${y}-${String(m+1).padStart(2,'0')}-`;
+  holidays = Object.keys(OAB_FERIADOS).filter(k => k.startsWith(prefix));
+}
+
+// ══════════════════════════════════════════════
+//  DISTRIBUIÇÃO DETERMINÍSTICA E BEM BALANCEADA
+//
+//  Algoritmo:
+//  1. Atribui um "peso" a cada dia útil com base no dia da semana
+//     (Seg/Sex ligeiramente mais, Qua um pouco menos – reflexo real)
+//  2. Distribui as cópias proporcionalmente ao peso (Math.round)
+//  3. Ajusta a diferença nos dias com maior/menor peso para fechar
+//     exatamente no total pedido.
+//  4. Gera contador inicial e final de cada dia.
+//
+//  Resultado: distribuição DETERMINÍSTICA (mesmos inputs → mesma saída),
+//  sem aleatoriedade, mas com variação natural realista.
+// ══════════════════════════════════════════════
+
+// Peso por dia da semana (0=Dom, 1=Seg … 6=Sáb)
+const DOW_WEIGHT = [1.0, 1.12, 1.0, 0.90, 1.0, 1.08, 1.0];
+
+function distribute(start, end, workingDays) {
+  const total = end - start;
+  if (total <= 0 || workingDays.length === 0) return null;
+  const n = workingDays.length;
+
+  // Pesos determinísticos por dia da semana
+  const weights = workingDays.map(d => DOW_WEIGHT[new Date(cy, cm, d).getDay()]);
+  const sumW = weights.reduce((a,b) => a+b, 0);
+
+  // Cópias brutas arredondadas
+  let copies = weights.map(w => Math.max(1, Math.round((w / sumW) * total)));
+
+  // Ajuste para fechar exatamente no total
+  let diff = total - copies.reduce((a,b) => a+b, 0);
+
+  // Distribui a diferença nos dias com maior peso primeiro
+  if (diff !== 0) {
+    // Índices ordenados por peso decrescente para ajuste
+    const idxByWeight = weights
+      .map((w, i) => ({ i, w }))
+      .sort((a, b) => b.w - a.w)
+      .map(x => x.i);
+
+    let idx = 0;
+    while (diff !== 0) {
+      const i = idxByWeight[idx % n];
+      if (diff > 0) { copies[i]++; diff--; }
+      else if (copies[i] > 1) { copies[i]--; diff++; }
+      idx++;
+    }
+  }
+
+  // Monta resultado com contador inicial e final por dia
+  const result = {};
+  let running = start;
+  workingDays.forEach((day, i) => {
+    const ci = running;
+    running += copies[i];
+    result[day] = { ci, cf: running, copies: copies[i] };
+  });
+
+  return result;
+}
+
+// ══════════════════════════════════════════════
+//  CALCULAR E RENDERIZAR
+// ══════════════════════════════════════════════
+function calculate() {
+  const cadS = parseInt(document.getElementById('cad-s').value) || 0;
+  const cadE = parseInt(document.getElementById('cad-e').value) || 0;
+  const civS = parseInt(document.getElementById('civ-s').value) || 0;
+  const civE = parseInt(document.getElementById('civ-e').value) || 0;
+  const trbS = parseInt(document.getElementById('trb-s').value) || 0;
+  const trbE = parseInt(document.getElementById('trb-e').value) || 0;
+
+  const wd = getWorkingDays(cy, cm);
+  const n  = wd.length;
+  document.getElementById('wdCount').textContent = n;
+
+  const cadT = cadE - cadS;
+  const civT = civE - civS;
+  const trbT = trbE - trbS;
+
+  document.getElementById('badge-cad').textContent = cadT > 0 ? 'Total: '+fmt(cadT) : 'Total: —';
+  document.getElementById('badge-civ').textContent = civT > 0 ? 'Total: '+fmt(civT) : 'Total: —';
+  document.getElementById('badge-trb').textContent = trbT > 0 ? 'Total: '+fmt(trbT) : 'Total: —';
+
+  const cadD = cadE > cadS ? distribute(cadS, cadE, wd) : null;
+  const civD = civE > civS ? distribute(civS, civE, wd) : null;
+  const trbD = trbE > trbS ? distribute(trbS, trbE, wd) : null;
+
+  const isCurMon = today.getFullYear()===cy && today.getMonth()===cm;
+  const todayWI  = isCurMon ? wd.indexOf(today.getDate()) : -1;
+
+  updateProg('cad', cadD, wd, todayWI, n);
+  updateProg('civ', civD, wd, todayWI, n);
+  updateProg('trb', trbD, wd, todayWI, n);
+
+  const anyData = cadD || civD || trbD;
+  document.getElementById('sumGrid').style.display = anyData ? 'grid' : 'none';
+
+  if (anyData) {
+    const cadPD = n>0&&cadT>0 ? Math.round(cadT/n) : 0;
+    const civPD = n>0&&civT>0 ? Math.round(civT/n) : 0;
+    const trbPD = n>0&&trbT>0 ? Math.round(trbT/n) : 0;
+    const grand = (cadT>0?cadT:0)+(civT>0?civT:0)+(trbT>0?trbT:0);
+
+    set('sc-cad-d', cadPD>0 ? '~'+fmt(cadPD) : '—');
+    set('sc-cad-t', 'Total: '+(cadT>0?fmt(cadT):'—'));
+    set('sc-civ-d', civPD>0 ? '~'+fmt(civPD) : '—');
+    set('sc-civ-t', 'Total: '+(civT>0?fmt(civT):'—'));
+    set('sc-trb-d', trbPD>0 ? '~'+fmt(trbPD) : '—');
+    set('sc-trb-t', 'Total: '+(trbT>0?fmt(trbT):'—'));
+    set('sc-grand',  grand>0 ? fmt(grand) : '—');
+    set('sc-grand-s', n+' dias úteis — '+MONTHS[cm]+' '+cy);
+  }
+
+  buildTable(cadD, civD, trbD, wd, isCurMon);
+
+  lastCalc = {
+    cadD, civD, trbD,
+    cadS, cadE, civS, civE, trbS, trbE,
+    cadT, civT, trbT,
+    wd, n, isCurMon,
+    cadPD: n>0&&cadT>0?Math.round(cadT/n):0,
+    civPD: n>0&&civT>0?Math.round(civT/n):0,
+    trbPD: n>0&&trbT>0?Math.round(trbT/n):0,
+  };
+}
+
+function updateProg(id, dist, wd, todayWI, n) {
+  const fill = document.getElementById('pg-'+id);
+  const lbl  = document.getElementById('pg-'+id+'-lbl');
+  const pct  = document.getElementById('pg-'+id+'-pct');
+  if (!dist || n===0 || todayWI<0) {
+    fill.style.width = '0%';
+    lbl.textContent = todayWI<0 ? (n>0 ? n+' dias úteis no mês' : '—') : 'Hoje não é dia útil';
+    pct.textContent = '';
+    return;
+  }
+  const p = Math.round(((todayWI+1)/n)*100);
+  fill.style.width = p+'%';
+  lbl.textContent = 'Dia útil '+(todayWI+1)+' de '+n;
+  pct.textContent = p+'%';
+}
+
+function buildTable(cadD, civD, trbD, wd, isCurMon) {
+  const body  = document.getElementById('tBody');
+  const total = daysInMonth(cy, cm);
+
+  if (!cadD && !civD && !trbD) {
+    body.innerHTML = `<tr><td colspan="12" style="text-align:center;padding:36px;color:var(--dim)">Preencha os contadores acima para gerar a distribuição</td></tr>`;
+    return;
+  }
+
+  let html = '';
+  let wdc = 0;
+
+  for (let d=1; d<=total; d++) {
+    const date    = new Date(cy, cm, d);
+    const working = isWorkDay(date);
+    const holKey  = fmtD(date);
+    const isH     = isHol(date);
+    const isTod   = isCurMon && d===today.getDate();
+    const dname   = DAYS[date.getDay()];
+
+    if (working) wdc++;
+
+    let dayLabel = dname;
+    if (!working) {
+      if (isH)           dayLabel += ' 🔴 '+(OAB_FERIADOS[holKey]||'Feriado');
+      else if (date.getDay()===0) dayLabel += ' ☀️ Dom';
+      else               dayLabel += ' 🔵 Sáb';
+    }
+
+    const cadRow = working && cadD ? cadD[d] : null;
+    const civRow = working && civD ? civD[d] : null;
+    const trbRow = working && trbD ? trbD[d] : null;
+
+    const rc = [(working?'':'non-wd'),(isTod?'row-today':'')].filter(Boolean).join(' ');
+
+    // Células CAD
+    const cadCells = cadRow
+      ? `<td class="ci cad">${fmt(cadRow.ci)}</td><td class="cf cad">${fmt(cadRow.cf)}</td><td class="cp cad">+${fmt(cadRow.copies)}</td>`
+      : working
+        ? `<td class="empty">—</td><td class="empty">—</td><td class="empty">—</td>`
+        : `<td></td><td></td><td></td>`;
+
+    const civCells = civRow
+      ? `<td class="ci civ">${fmt(civRow.ci)}</td><td class="cf civ">${fmt(civRow.cf)}</td><td class="cp civ">+${fmt(civRow.copies)}</td>`
+      : working
+        ? `<td class="empty">—</td><td class="empty">—</td><td class="empty">—</td>`
+        : `<td></td><td></td><td></td>`;
+
+    const trbCells = trbRow
+      ? `<td class="ci trb">${fmt(trbRow.ci)}</td><td class="cf trb">${fmt(trbRow.cf)}</td><td class="cp trb">+${fmt(trbRow.copies)}</td>`
+      : working
+        ? `<td class="empty">—</td><td class="empty">—</td><td class="empty">—</td>`
+        : `<td></td><td></td><td></td>`;
+
+    html += `<tr class="${rc}">
+      <td class="dn">${String(d).padStart(2,'0')}${isTod?' ◀':''}</td>
+      <td class="dd">${dayLabel}</td>
+      <td class="dwi">${working?wdc:'—'}</td>
+      ${cadCells}${civCells}${trbCells}
+    </tr>`;
+  }
+
+  body.innerHTML = html;
+
+  if (isCurMon) {
+    setTimeout(() => {
+      const tr = body.querySelector('tr.row-today');
+      if (tr) tr.scrollIntoView({ block:'center', behavior:'smooth' });
+    }, 80);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  IMPRESSÃO
+// ══════════════════════════════════════════════
+function buildPrintReport(sector) {
+  const { cadD, civD, trbD, cadS, cadE, civS, civE, trbS, trbE,
+          cadT, civT, trbT, wd, n, isCurMon, cadPD, civPD, trbPD } = lastCalc;
+
+  const mesAno = MONTHS[cm]+' / '+cy;
+  const now = new Date();
+  const emissao = now.toLocaleDateString('pt-BR')+' às '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const grand = (cadT>0?cadT:0)+(civT>0?civT:0)+(trbT>0?trbT:0);
+  const sLabel = {cad:'CAD',civel:'Fórum Cível',trab:'Fórum Trabalhista',all:'Todos os Setores'};
+
+  // ── Cabeçalho ──
+  let h = `<div class="pr-header">
+    <div>
+      <div class="pr-title">Controle de Cópias & Impressões</div>
+      <div class="pr-sub">247ª Subseção OAB — Santana de Parnaíba &nbsp;|&nbsp; ${mesAno} &nbsp;|&nbsp; ${sLabel[sector]}</div>
+    </div>
+    <div class="pr-meta">
+      <div>Emitido em: ${emissao}</div>
+      <div>Dias úteis no mês: ${n}</div>
+    </div>
+  </div>`;
+
+  // ── Resumo ──
+  h += `<div class="pr-sum">`;
+  if (sector==='all'||sector==='cad')
+    h += `<div class="pr-sc sc-cad pr-sc-cad">
+      <div class="pr-sc-lbl">CAD</div>
+      <div class="pr-sc-val">${cadT>0?fmt(cadT):'—'}</div>
+      <div class="pr-sc-sub">${cadT>0?'~'+fmt(cadPD)+'/dia &nbsp;|&nbsp; '+fmt(cadS)+' → '+fmt(cadE):''}</div>
+    </div>`;
+  if (sector==='all'||sector==='civel')
+    h += `<div class="pr-sc sc-civel pr-sc-civel">
+      <div class="pr-sc-lbl">Fórum Cível</div>
+      <div class="pr-sc-val">${civT>0?fmt(civT):'—'}</div>
+      <div class="pr-sc-sub">${civT>0?'~'+fmt(civPD)+'/dia &nbsp;|&nbsp; '+fmt(civS)+' → '+fmt(civE):''}</div>
+    </div>`;
+  if (sector==='all'||sector==='trab')
+    h += `<div class="pr-sc sc-trab pr-sc-trab">
+      <div class="pr-sc-lbl">Fórum Trabalhista</div>
+      <div class="pr-sc-val">${trbT>0?fmt(trbT):'—'}</div>
+      <div class="pr-sc-sub">${trbT>0?'~'+fmt(trbPD)+'/dia &nbsp;|&nbsp; '+fmt(trbS)+' → '+fmt(trbE):''}</div>
+    </div>`;
+  if (sector==='all')
+    h += `<div class="pr-sc sc-tot">
+      <div class="pr-sc-lbl">Total Geral</div>
+      <div class="pr-sc-val">${grand>0?fmt(grand):'—'}</div>
+      <div class="pr-sc-sub">${n} dias úteis</div>
+    </div>`;
+  h += `</div>`;
+
+  // ── Tabela ──
+  const showCad = (sector==='all'||sector==='cad')   && cadD;
+  const showCiv = (sector==='all'||sector==='civel') && civD;
+  const showTrb = (sector==='all'||sector==='trab')  && trbD;
+
+  h += `<div class="pr-tbl-title">Distribuição Diária — ${mesAno}</div>`;
+  h += `<table class="pr-tbl"><thead><tr>
+    <th>Dia</th><th>Semana</th><th>Útil#</th>`;
+  if (showCad) h += `<th class="h-cad pr-col-cad">CAD Inicial</th><th class="h-cad pr-col-cad">CAD Final</th><th class="h-cad pr-col-cad">CAD +Cóp.</th>`;
+  if (showCiv) h += `<th class="h-civel pr-col-civel">Cível Inicial</th><th class="h-civel pr-col-civel">Cível Final</th><th class="h-civel pr-col-civel">Cível +Cóp.</th>`;
+  if (showTrb) h += `<th class="h-trab pr-col-trab">Trab. Inicial</th><th class="h-trab pr-col-trab">Trab. Final</th><th class="h-trab pr-col-trab">Trab. +Cóp.</th>`;
+  h += `</tr></thead><tbody>`;
+
+  const total = daysInMonth(cy, cm);
+  let wdc=0, sumCad=0, sumCiv=0, sumTrb=0;
+
+  for (let d=1; d<=total; d++) {
+    const date = new Date(cy, cm, d);
+    const working = isWorkDay(date);
+    const isH = isHol(date);
+    const isTod = isCurMon && d===today.getDate();
+    const hKey = fmtD(date);
+    if (working) wdc++;
+
+    const cadR = working && cadD ? cadD[d] : null;
+    const civR = working && civD ? civD[d] : null;
+    const trbR = working && trbD ? trbD[d] : null;
+    if (cadR) sumCad += cadR.copies;
+    if (civR) sumCiv += civR.copies;
+    if (trbR) sumTrb += trbR.copies;
+
+    let dayLabel = DAYS[date.getDay()];
+    if (!working) {
+      if (isH) dayLabel += ' — '+(OAB_FERIADOS[hKey]||'Feriado');
+      else if (date.getDay()===0) dayLabel += ' — Domingo';
+      else dayLabel += ' — Sábado';
+    }
+
+    const rc = !working ? 'pr-nw' : (isTod ? 'pr-today' : '');
+
+    h += `<tr class="${rc}">
+      <td class="pr-dn">${String(d).padStart(2,'0')}${isTod?' ◀':''}</td>
+      <td class="pr-dd">${dayLabel}</td>
+      <td class="pr-wi">${working?wdc:'—'}</td>`;
+
+    if (showCad) {
+      h += cadR
+        ? `<td class="pr-ci-cad pr-col-cad">${fmt(cadR.ci)}</td><td class="pr-cf-cad pr-col-cad">${fmt(cadR.cf)}</td><td class="pr-cp-cad pr-col-cad">+${fmt(cadR.copies)}</td>`
+        : `<td class="pr-emp pr-col-cad">—</td><td class="pr-col-cad"></td><td class="pr-col-cad"></td>`;
+    }
+    if (showCiv) {
+      h += civR
+        ? `<td class="pr-ci-civ pr-col-civel">${fmt(civR.ci)}</td><td class="pr-cf-civ pr-col-civel">${fmt(civR.cf)}</td><td class="pr-cp-civ pr-col-civel">+${fmt(civR.copies)}</td>`
+        : `<td class="pr-emp pr-col-civel">—</td><td class="pr-col-civel"></td><td class="pr-col-civel"></td>`;
+    }
+    if (showTrb) {
+      h += trbR
+        ? `<td class="pr-ci-trb pr-col-trab">${fmt(trbR.ci)}</td><td class="pr-cf-trb pr-col-trab">${fmt(trbR.cf)}</td><td class="pr-cp-trb pr-col-trab">+${fmt(trbR.copies)}</td>`
+        : `<td class="pr-emp pr-col-trab">—</td><td class="pr-col-trab"></td><td class="pr-col-trab"></td>`;
+    }
+    h += `</tr>`;
+  }
+
+  // Linha de totais
+  h += `<tr class="pr-totals">
+    <td colspan="3" style="text-align:right">TOTAL DO MÊS</td>`;
+  if (showCad) h += `<td class="pr-col-cad"></td><td class="pr-col-cad"></td><td class="pr-cp-cad pr-col-cad">${fmt(sumCad)} cópias</td>`;
+  if (showCiv) h += `<td class="pr-col-civel"></td><td class="pr-col-civel"></td><td class="pr-cp-civ pr-col-civel">${fmt(sumCiv)} cópias</td>`;
+  if (showTrb) h += `<td class="pr-col-trab"></td><td class="pr-col-trab"></td><td class="pr-cp-trb pr-col-trab">${fmt(sumTrb)} cópias</td>`;
+  h += `</tr></tbody></table>`;
+
+  // Feriados
+  if (holidays.length > 0) {
+    h += `<div class="pr-hols"><div class="pr-hols-ttl">Feriados / Pontes no mês:</div>`;
+    [...holidays].sort().forEach(hk => {
+      const [y,mo,dv] = hk.split('-');
+      h += `<span class="pr-hol-item">${dv}/${mo} — ${OAB_FERIADOS[hk]||'Feriado'}</span>`;
+    });
+    h += `</div>`;
+  }
+
+  // Rodapé
+  h += `<div class="pr-footer">
+    <span>247ª Subseção OAB — Santana de Parnaíba &nbsp;|&nbsp; Rua Alberto Frediani, 770 — Jardim Frediani</span>
+    <span>Emitido em ${emissao}</span>
+  </div>`;
+
+  document.getElementById('printReport').innerHTML = h;
+}
+
+// ══════════════════════════════════════════════
+//  FERIADOS
+// ══════════════════════════════════════════════
+function addHol() {
+  const v = document.getElementById('holInput').value;
+  if (!v || holidays.includes(v)) return;
+  holidays.push(v);
+  holidays.sort();
+  document.getElementById('holInput').value = '';
+  renderHols();
+  calculate();
+}
+
+function removeHol(v) {
+  holidays = holidays.filter(h => h !== v);
+  renderHols();
+  calculate();
+}
+
+function renderHols() {
+  const list = document.getElementById('holList');
+  if (!holidays.length) { list.innerHTML = ''; return; }
+  list.innerHTML = [...holidays].sort().map(h => {
+    const [y,m,d] = h.split('-');
+    const nome  = OAB_FERIADOS[h] || 'Feriado';
+    const isOAB = !!OAB_FERIADOS[h];
+    const rmBtn = isOAB ? '' : `<button onclick="removeHol('${h}')">✕</button>`;
+    return `<span class="htag">${d}/${m} — ${nome}${rmBtn}</span>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════
+function openModal() {
+  printSector = 'all';
+  document.querySelectorAll('.popt').forEach(el =>
+    el.classList.remove('sel-cad','sel-civel','sel-trab','sel-all'));
+  document.getElementById('po-all').classList.add('sel-all');
+  document.getElementById('printModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('printModal').classList.remove('open'); }
+
+function selPrint(s) {
+  printSector = s;
+  document.querySelectorAll('.popt').forEach(el =>
+    el.classList.remove('sel-cad','sel-civel','sel-trab','sel-all'));
+  document.getElementById('po-'+s).classList.add('sel-'+s);
+}
+
+function confirmPrint() {
+  if (!lastCalc.cadD && !lastCalc.civD && !lastCalc.trbD) {
+    alert('Preencha os contadores antes de imprimir.');
+    return;
+  }
+  closeModal();
+  buildPrintReport(printSector);
+  document.body.classList.remove('print-cad','print-civel','print-trab');
+  if (printSector !== 'all') document.body.classList.add('print-'+printSector);
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => document.body.classList.remove('print-cad','print-civel','print-trab'), 500);
+  }, 120);
+}
+
+document.getElementById('printModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('printModal')) closeModal();
+});
+
+function clearAll() {
+  ['cad','civ','trb'].forEach(s => {
+    document.getElementById(s+'-s').value='';
+    document.getElementById(s+'-e').value='';
+  });
+  loadHols(cy, cm);
+  renderHols();
+  calculate();
+}
+
+// ── Helpers ──
+function fmt(n) { return Number(n).toLocaleString('pt-BR'); }
+function set(id, txt) { document.getElementById(id).textContent = txt; }
+
+// Init
+renderHols();
+calculate();
 </script>
 </body>
 </html>
